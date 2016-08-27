@@ -1,0 +1,4 @@
+rootProject.name = 'pixi-gwt-demo'
+include ":pixi-gwt"
+
+project(":pixi-gwt").projectDir = file("../pixi-gwt")

@@ -1,0 +1,82 @@
+buildscript {
+    repositories {
+		mavenCentral()
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.5"
+    }
+}
+
+plugins {
+    id "fr.putnami.gwt" version "0.4.0"
+}
+
+group 'sk.mrtn'
+version '1.0-SNAPSHOT'
+
+ext {
+
+    daggerVersion  = "2.6.1"
+    gwtVersion     = "2.8.0-rc2"
+    guavaVersion   = "19.0"
+    putnamiVersion = "0.3.0"
+    autofactoryVersion = '1.0-beta3'
+    hammerVersion  = "1.0.0"
+
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: "net.ltgt.apt"
+repositories {
+    mavenCentral()
+}
+sourceCompatibility = "1.8"
+
+apply plugin: 'fr.putnami.gwt'
+
+dependencies {
+    compile "com.google.guava:guava-gwt:${project.guavaVersion}"
+    compile "com.google.gwt:gwt-user:$project.gwtVersion"
+    compile "com.google.dagger:dagger-gwt:${project.daggerVersion}"
+    compile "com.google.auto.factory:auto-factory:${project.autofactoryVersion}"
+
+    // https://mvnrepository.com/artifact/com.google.gwt/gwt-dev
+//    compile group: 'com.google.gwt', name: 'gwt-dev', version: project.gwtVersion
+
+    compileOnly "com.google.dagger:dagger:${project.daggerVersion}"
+    apt "com.google.auto.factory:auto-factory:${project.autofactoryVersion}"
+    apt "com.google.guava:guava:${project.guavaVersion}"
+    apt "com.google.dagger:dagger-compiler:${project.daggerVersion}"
+
+    compile project(":pixi-gwt")
+}
+
+putnami {
+    module 'sk.mrtn.demo.pixi.DemoPixi'
+    /** GWT version */
+    gwtVersion = project.gwtVersion
+    /** Add the gwt-elemental lib */
+    gwtElementalLib = true
+
+    dev {
+        bindAddress = "0.0.0.0"
+        generateJsInteropExports = true
+    }
+
+    compile {
+        generateJsInteropExports = true
+    }
+
+}
+
+def genResources = new File(project.buildDir, "generated/source/apt/main")
+
+sourceSets {
+    main {
+        resources {
+            srcDir genResources
+        }
+    }
+}
+
