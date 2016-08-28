@@ -6,14 +6,18 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Timer;
 import elemental.client.Browser;
+import elemental.css.CSSStyleDeclaration;
+import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
 import sk.mrtn.pixi.client.*;
-import sk.mrtn.pixi.client.filters.*;
+import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
 import sk.mrtn.pixi.client.particles.Emitter;
 import sk.mrtn.pixi.client.particles.ParticleContainer;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
+import sk.mrtn.pixi.client.ticker.ITickable;
+import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
 import java.util.logging.Level;
@@ -21,6 +25,7 @@ import java.util.logging.Logger;
 
 /**
  * Created by klaun on 25/04/16.
+ * This class is supposed to be main entry point for whole project
  */
 public class DemoPixi {
 
@@ -34,11 +39,13 @@ public class DemoPixi {
     }
 
     private final ParticleBuilder particleBuilder;
+    private final Ticker ticker;
 
     private PIXI pixi;
     private Renderer renderer;
     private Container stage;
     private Sprite bunnySprite;
+    private final DivElement fpsNode;
 
     @FunctionalInterface
     private interface IButtonCommand{
@@ -47,12 +54,20 @@ public class DemoPixi {
 
     @Inject
     DemoPixi(
-            final ParticleBuilder particleBuilder
+            final ParticleBuilder particleBuilder,
+            final Ticker ticker
             ){
         this.particleBuilder = particleBuilder;
-//        InterfaceReader.parseObjectAndOutputToConsole( new BlurFilter(), "PIXI.filters.BlurFilter");
+        this.ticker = ticker;
+//        InterfaceReader.parseObjectAndOutputToConsole( new Stats(), "Stats");
         loadResources();
+
+        fpsNode = Browser.getDocument().createDivElement();
+        fpsNode.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
+        Browser.getDocument().getBody().appendChild(fpsNode);
+
     }
+
 
     private void loadResources() {
         Loader aLoader = new Loader();
@@ -73,14 +88,35 @@ public class DemoPixi {
         renderer = this.pixi.autoDetectRenderer(800, 600);
         Browser.getDocument().getBody().appendChild(renderer.view);
 
-        Sprite spices3 = createSprite(RES.spices3().getSafeUri().asString());
-        stage.addChild(spices3);
+        Sprite background = createBackground();
 
+        createBunnies();
+
+        renderer.render(stage);
+
+        testFilters(background);
+        testHandlers();
+        testEmitters();
+        testParticleBuilder();
+        ticker.add(difference -> {
+            double fps = Math.round((1000 / ticker.elapsedMS) * 100.0) / 100.0;
+            fpsNode.setTextContent("fps: "+fps);
+            renderer.render(stage);
+        });
+        ticker.start();
+    }
+
+    private Sprite createBackground() {
+        Sprite background = createSprite(RES.spices3().getSafeUri().asString());
+        stage.addChild(background);
+        return background;
+    }
+
+    private void createBunnies() {
         bunnySprite = createSprite(RES.bunny().getSafeUri().asString());
         bunnySprite.name = "bunny1";
         bunnySprite.position.set(100,100);
         bunnySprite.anchor.set(0.5,0.5);
-
         stage.addChild(bunnySprite);
 
         Sprite bunnySprite2 = createSprite(RES.bunny().getSafeUri().asString());
@@ -88,14 +124,6 @@ public class DemoPixi {
         bunnySprite2.anchor.set(0.5,0.5);
         bunnySprite2.name = "bunny2";
         stage.addChild(bunnySprite2);
-
-        renderer.render(stage);
-        Emitter object = new Emitter(bunnySprite2);
-//        InterfaceReader.parseObjectAndOutputToConsole(new PathParticle(object), "PIXI.particles.AnimatedParticle");
-        testFilters(spices3);
-        testHandlers();
-        testEmitters();
-        testParticleBuilder();
     }
 
     private void testParticleBuilder() {
@@ -103,9 +131,10 @@ public class DemoPixi {
         TextureAtlasResource textureAtlasResource = RES.goldAnim();
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
         stage.addChild(particleBuilder.getContainer());
-        startEmit(particleBuilder.getEmitter(),renderer,stage);
         particleBuilder.getContainer().position.set(300,300);
+        this.ticker.add(difference -> particleBuilder.getEmitter().update(DemoPixi.this.ticker.elapsedMS * 0.001));
     }
+
     private void testEmitters() {
         JavaScriptObject jConfig = JSONParser.parseStrict(RES.emitter().getText()).isObject().getJavaScriptObject();
         EmitterConfig config = PixiUtils.castToEmitter(jConfig);
@@ -115,39 +144,13 @@ public class DemoPixi {
         stage.addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
         particleContainer.position.set(300,300);
-        startEmit(emitter,renderer,stage);
+        this.ticker.add(difference -> {
+            emitter.update(DemoPixi.this.ticker.elapsedMS * 0.001);
+        });
     }
 
     public static native void logg(Object object) /*-{
         $wnd.console.log(object);
-    }-*/;
-
-    public static native void startEmit(Emitter emitter, Renderer renderer, Container stage) /*-{
-        // Calculate the current time
-        var elapsed = Date.now();
-
-        // Update function every frame
-        var update = function(){
-
-            // Update the next frame
-            $wnd.requestAnimationFrame(update);
-
-            var now = $wnd.Date.now();
-
-            // The emitter requires the elapsed
-            // number of seconds since the last update
-            emitter.update((now - elapsed) * 0.001);
-            elapsed = now;
-
-            // Should re-render the PIXI Stage
-             renderer.render(stage);
-        };
-
-        // Start emitting
-        emitter.emit = true;
-
-        // Start the update
-        update();
     }-*/;
 
     private void testHandlers() {

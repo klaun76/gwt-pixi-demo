@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 
 /**
  * Created by klaun on 21/04/16.
+ * Standard gwt entry point. Because of dagger injection i decided
+ * to leave everything within injection. Thats why there is only injection
+ * of demo pixi component. rest of code will be fully injectable.
  */
 public class DemoPixiEntryPoint implements EntryPoint {
 
@@ -30,7 +33,5 @@ public class DemoPixiEntryPoint implements EntryPoint {
         IDemoPixiComponent root = DaggerDemoPixiEntryPoint_IDemoPixiComponent
                 .create();
         root.get().initialize();
-
-
     }
 }
