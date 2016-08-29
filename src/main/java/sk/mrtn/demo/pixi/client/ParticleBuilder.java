@@ -55,25 +55,10 @@ public class ParticleBuilder {
         this.particleContainerPropertiesProvider = particleContainerPropertiesProvider;
     }
 
-    // at the time I did not know how to cast extept this cheating :-(
-    public static native <T> T parseNative(JavaScriptObject jConfig) /*-{
-        return jConfig;
-    }-*/;
-
-    @JsMethod(namespace="JSON")
-    private static native EmitterConfig parse(String text);
-
     // TODO: add customisation for container type, and particle type
     public void initialize(String emitterConfig, TextureAtlasResource textureAtlasResource) {
         LOG.fine("initialize");
-        JavaScriptObject jConfig = JSONParser.parseStrict(emitterConfig).isObject().getJavaScriptObject();
-
-//        EmitterConfig config1 = parseNative(JSONParser.parseStrict(emitterConfig).isObject().getJavaScriptObject());
-        EmitterConfig config2 = parse(emitterConfig);
-        EmitterConfig config = PixiUtils.castToEmitter(jConfig);
-        logg(config);
-        logg(config2);
-//        logg(config1);
+        EmitterConfig config = EmitterConfig.parse(emitterConfig);
         AnimatedArticleArtTextureNames[] arts = new AnimatedArticleArtTextureNames[1];
         AnimatedArticleArtTextureNames art = new AnimatedArticleArtTextureNames();
         art.framerate = 20;

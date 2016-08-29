@@ -136,8 +136,7 @@ public class DemoPixi {
     }
 
     private void testEmitters() {
-        JavaScriptObject jConfig = JSONParser.parseStrict(RES.emitter().getText()).isObject().getJavaScriptObject();
-        EmitterConfig config = PixiUtils.castToEmitter(jConfig);
+        EmitterConfig config = EmitterConfig.parse(RES.emitter().getText());
         LOG.fine("EmitterConfig test: "+config.alpha.start+":"+config.alpha.end);
         Texture texture = Texture.fromImage(RES.bunny().getSafeUri().asString());
         ParticleContainer particleContainer = new ParticleContainer();
