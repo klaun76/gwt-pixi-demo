@@ -77,7 +77,7 @@ public class DemoPixi {
             aLoader.add(safeUri.asString());
         }
         aLoader.load((loader, resources) -> {
-            log(loader,resources);
+//            log(loader,resources);
             buildStage();
         });
     }
@@ -137,9 +137,9 @@ public class DemoPixi {
 
     private void testEmitters() {
         EmitterConfig config = EmitterConfig.parse(RES.emitter().getText());
-        LOG.fine("EmitterConfig test: "+config.alpha.start+":"+config.alpha.end);
+        LOG.fine("EmitterConfig test: "+config.color.start+":"+config.color.end);
         Texture texture = Texture.fromImage(RES.bunny().getSafeUri().asString());
-        ParticleContainer particleContainer = new ParticleContainer();
+        Container particleContainer = new Container();
         stage.addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
         particleContainer.position.set(300,300);
