@@ -1,9 +1,6 @@
 package sk.mrtn.demo.pixi.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.logging.client.LogConfiguration;
-import jsinterop.annotations.JsMethod;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.particles.*;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
@@ -59,15 +56,17 @@ public class ParticleBuilder {
     public void initialize(String emitterConfig, TextureAtlasResource textureAtlasResource) {
         LOG.fine("initialize");
         EmitterConfig config = EmitterConfig.parse(emitterConfig);
-        AnimatedArticleArtTextureNames[] arts = new AnimatedArticleArtTextureNames[1];
-        AnimatedArticleArtTextureNames art = new AnimatedArticleArtTextureNames();
-        art.framerate = 20;
+        AnimatedParticleArtTextureNames[] arts = new AnimatedParticleArtTextureNames[1];
+        AnimatedParticleArtTextureNames art = new AnimatedParticleArtTextureNames();
+        art.setFramerateToMatchLife();
         art.loop = true;
         List<String> frames = textureAtlasResource.getFrames();
-        art.textures = new String[frames.size()];
+        String[] textures = new String[frames.size()];
         for (int i = 0; i < frames.size(); i++) {
-            art.textures[i] = frames.get(i);
+            textures[i] = frames.get(i);
         }
+        art.setTextures(textures);
+        art.addTexture(Texture.fromFrame("gold_6.png"),20);
         arts[0]=art;
         this.container = getContainer(true);
         this.emitter = buildEmitter(this.container, config, arts, ParticleType.ANIMATED_PARTICLE);
@@ -77,7 +76,7 @@ public class ParticleBuilder {
         $wnd.console.log(object);
     }-*/;
 
-    private Emitter buildEmitter(Container container, EmitterConfig config, AnimatedArticleArtTextureNames[] art, ParticleType animatedParticle) {
+    private Emitter buildEmitter(Container container, EmitterConfig config, AnimatedParticleArtTextureNames[] art, ParticleType animatedParticle) {
         Emitter emitter = this.emitterFactory.create(container, art, config);
         switch (animatedParticle) {
             case PARTICLE:
