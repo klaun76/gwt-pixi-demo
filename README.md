@@ -8,7 +8,9 @@ Try to avoid spaces within path to projects. Gradle (or maybe poor settings of p
 * background image on which few filters are applied
 * one larger bunny with mouse click interaction + some filter
 * second bunny with no interaction
-* one test particle form bunnies
+* one test particle form bunnies (changing color)
 * animated particle created from coins (resources taken from [Pixi particles demo](https://github.com/pixijs/pixi-particles))
+* animated particle created from bubbles (resources taken from [Pixi particles demo](https://github.com/pixijs/pixi-particles))
+* coins and bubbles particles are placed into one common ParticlesContainer
 # Warning
-This demo will be updated alongw with [Pixi gwt](https://github.com/klaun76/gwt-pixi) because this library is in early development stages and this testing project is closely dependent on [Pixi gwt](https://github.com/klaun76/gwt-pixi) library
+This demo will be updated along with [Pixi gwt](https://github.com/klaun76/gwt-pixi) because this library is in early development stages and this testing project is closely dependent on [Pixi gwt](https://github.com/klaun76/gwt-pixi) library

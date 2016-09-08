@@ -1,0 +1,102 @@
+{"frames": {
+
+"buble_anim_00.png":
+{
+	"frame": {"x":0,"y":0,"w":99,"h":99},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":99,"h":99},
+	"sourceSize": {"w":99,"h":99},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"buble_anim_01.png":
+{
+	"frame": {"x":0,"y":103,"w":67,"h":60},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":19,"w":67,"h":60},
+	"sourceSize": {"w":99,"h":99},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"buble_anim_02.png":
+{
+	"frame": {"x":206,"y":0,"w":87,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":87,"h":84},
+	"sourceSize": {"w":99,"h":99},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"buble_anim_03.png":
+{
+	"frame": {"x":103,"y":0,"w":99,"h":99},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":99,"h":99},
+	"sourceSize": {"w":99,"h":99},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_00.png":
+{
+	"frame": {"x":206,"y":88,"w":84,"h":84},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":84,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_01.png":
+{
+	"frame": {"x":294,"y":88,"w":68,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":0,"w":68,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_02.png":
+{
+	"frame": {"x":366,"y":88,"w":52,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":0,"w":52,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_03.png":
+{
+	"frame": {"x":422,"y":88,"w":17,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":33,"y":0,"w":17,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_04.png":
+{
+	"frame": {"x":369,"y":0,"w":52,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":0,"w":52,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"coin_anim_05.png":
+{
+	"frame": {"x":297,"y":0,"w":68,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":0,"w":68,"h":84},
+	"sourceSize": {"w":84,"h":84},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "buble_coin_atlas_d-1080_0.png",
+	"format": "INDEXED",
+	"size": {"w":439,"h":172},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e7bdc2b8df506933981bba19939c772a:37f1a1875b0778f75f7a77ee1ecee8da:2488d1e84ed1d1f79b5ee3e6b15b02e9$"
+}
+}

@@ -17,6 +17,9 @@ public interface IResources extends ClientBundle {
     @Source("gold_anim.json")
     TextureAtlasResource goldAnim();
 
+    @Source("buble_coin_atlas_d-1080_0.json")
+    TextureAtlasResource bubblesAndCoinAnims();
+
     @Source("bunny.png")
     ImageResource bunny();
 
@@ -24,5 +27,8 @@ public interface IResources extends ClientBundle {
     ImageResource spices3();
 
     @Source("gold_anim_emitter.json")
-    TextResource emitter();
+    TextResource goldEmitter();
+
+    @Source("bubbles_emitter.json")
+    TextResource bubblesEmitter();
 }

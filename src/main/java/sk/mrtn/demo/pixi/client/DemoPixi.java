@@ -1,7 +1,6 @@
 package sk.mrtn.demo.pixi.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Timer;
@@ -9,17 +8,27 @@ import elemental.client.Browser;
 import elemental.css.CSSStyleDeclaration;
 import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
-import sk.mrtn.pixi.client.*;
+import sk.mrtn.pixi.client.Container;
+import sk.mrtn.pixi.client.PIXI;
+import sk.mrtn.pixi.client.PixiEntryPoint;
+import sk.mrtn.pixi.client.Point;
+import sk.mrtn.pixi.client.Renderer;
+import sk.mrtn.pixi.client.Sprite;
+import sk.mrtn.pixi.client.Texture;
 import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
+import sk.mrtn.pixi.client.particles.AnimatedParticleArtTextureNames;
 import sk.mrtn.pixi.client.particles.Emitter;
-import sk.mrtn.pixi.client.particles.ParticleContainer;
+import sk.mrtn.pixi.client.particles.RepetitiveTexture;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
-import sk.mrtn.pixi.client.ticker.ITickable;
 import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +48,7 @@ public class DemoPixi {
     }
 
     private final ParticleBuilder particleBuilder;
+    private final MultiParticleBuilder multiParticleBuilder;
     private final Ticker ticker;
 
     private PIXI pixi;
@@ -55,9 +65,11 @@ public class DemoPixi {
     @Inject
     DemoPixi(
             final ParticleBuilder particleBuilder,
+            final MultiParticleBuilder multiParticleBuilder,
             final Ticker ticker
             ){
         this.particleBuilder = particleBuilder;
+        this.multiParticleBuilder = multiParticleBuilder;
         this.ticker = ticker;
 //        InterfaceReader.parseObjectAndOutputToConsole( new Stats(), "Stats");
         loadResources();
@@ -74,6 +86,9 @@ public class DemoPixi {
         aLoader.add("bunny",RES.bunny().getSafeUri().asString());
         aLoader.add("spices3",RES.spices3().getSafeUri().asString());
         for (SafeUri safeUri : RES.goldAnim().getSafeUris()) {
+            aLoader.add(safeUri.asString());
+        }
+        for (SafeUri safeUri : RES.bubblesAndCoinAnims().getSafeUris()) {
             aLoader.add(safeUri.asString());
         }
         aLoader.load((loader, resources) -> {
@@ -96,8 +111,11 @@ public class DemoPixi {
 
         testFilters(background);
         testHandlers();
+
         testEmitters();
-        testParticleBuilder();
+//        testParticleBuilder();
+        testMultiEmitters();
+
         ticker.add(difference -> {
             double fps = Math.round((1000 / ticker.elapsedMS) * 100.0) / 100.0;
             fpsNode.setTextContent("fps: "+fps);
@@ -127,7 +145,7 @@ public class DemoPixi {
     }
 
     private void testParticleBuilder() {
-        String emitterConfig = RES.emitter().getText();
+        String emitterConfig = RES.goldEmitter().getText();
         TextureAtlasResource textureAtlasResource = RES.goldAnim();
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
         stage.addChild(particleBuilder.getContainer());
@@ -136,7 +154,7 @@ public class DemoPixi {
     }
 
     private void testEmitters() {
-        EmitterConfig config = EmitterConfig.parse(RES.emitter().getText());
+        EmitterConfig config = EmitterConfig.parse(RES.goldEmitter().getText());
         LOG.fine("EmitterConfig test: "+config.color.start+":"+config.color.end);
         Texture texture = Texture.fromImage(RES.bunny().getSafeUri().asString());
         Container particleContainer = new Container();
@@ -146,6 +164,52 @@ public class DemoPixi {
         this.ticker.add(difference -> {
             emitter.update(DemoPixi.this.ticker.elapsedMS * 0.001);
         });
+    }
+
+    /**
+     * showcase method for using two emitters inthe same ParticleContainer
+     */
+    private void testMultiEmitters() {
+
+        Map<String,List<AnimatedParticleArtTextureNames>> configToArtsMap = new HashMap<>();
+
+        String emitterConfig1 = RES.goldEmitter().getText();
+        String emitterConfig2 = RES.bubblesEmitter().getText();
+        List<AnimatedParticleArtTextureNames> arts1 = new ArrayList<>();
+        List<AnimatedParticleArtTextureNames> arts2 = new ArrayList<>();
+//        List<String> frames = RES.bubblesAndCoinAnims().getFrames();
+
+        //coins anim
+        AnimatedParticleArtTextureNames art1 = new AnimatedParticleArtTextureNames();
+        art1.setFramerateToMatchLife();
+        art1.loop = true;
+
+        //bubble anim
+        AnimatedParticleArtTextureNames art2 = new AnimatedParticleArtTextureNames();
+        art2.setFramerateToMatchLife();
+        art2.loop = false;
+
+        art1.addTexture("coin_anim_00.png");
+        art1.addTexture("coin_anim_01.png");
+        art1.addTexture("coin_anim_02.png");
+        art1.addTexture("coin_anim_03.png");
+        art1.addTexture("coin_anim_04.png");
+        art1.addTexture("coin_anim_05.png");
+
+        art2.addTexture(new RepetitiveTexture("buble_anim_00.png",40));
+        art2.addTexture("buble_anim_01.png");
+        art2.addTexture("buble_anim_02.png");
+        art2.addTexture("buble_anim_03.png");
+
+        arts1.add(art1);
+        arts2.add(art2);
+        configToArtsMap.put(emitterConfig1,arts1);
+        configToArtsMap.put(emitterConfig2,arts2);
+
+        multiParticleBuilder.initialize(configToArtsMap);
+        stage.addChild(multiParticleBuilder.getContainer());
+        multiParticleBuilder.getContainer().position.set(stage.getBounds().width/2, stage.getBounds().height/2);
+        this.ticker.add(difference -> multiParticleBuilder.update(DemoPixi.this.ticker.elapsedMS * 0.001));
     }
 
     public static native void logg(Object object) /*-{
