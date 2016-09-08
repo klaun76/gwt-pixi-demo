@@ -66,7 +66,7 @@ public class ParticleBuilder {
             textures[i] = frames.get(i);
         }
         art.setTextures(textures);
-        art.addTexture(Texture.fromFrame("gold_6.png"),20);
+        art.addTexture(new RepetitiveTexture(Texture.fromFrame("gold_6.png"),20));
         arts[0]=art;
         this.container = getContainer(true);
         this.emitter = buildEmitter(this.container, config, arts, ParticleType.ANIMATED_PARTICLE);
