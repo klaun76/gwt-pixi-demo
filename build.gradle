@@ -50,6 +50,7 @@ dependencies {
     apt "com.google.dagger:dagger-compiler:${project.daggerVersion}"
 
     compile project(":pixi-gwt")
+    compile project(":library")
 }
 
 putnami {

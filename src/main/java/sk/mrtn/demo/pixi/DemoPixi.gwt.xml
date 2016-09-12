@@ -6,6 +6,7 @@
     <inherits name='dagger.Dagger'/>
     <inherits name='elemental.Elemental'/>
     <inherits name="sk.mrtn.pixi.Pixi" />
+    <inherits name="sk.mrtn.library.Library" />
     <source path="client" />
     <entry-point class="sk.mrtn.demo.pixi.client.DemoPixiEntryPoint"></entry-point>
 

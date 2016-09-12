@@ -8,6 +8,7 @@ import elemental.client.Browser;
 import elemental.css.CSSStyleDeclaration;
 import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
+import sk.mrtn.library.client.utils.IUrlParametersManager;
 import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.PIXI;
 import sk.mrtn.pixi.client.PixiEntryPoint;
@@ -48,6 +49,7 @@ public class DemoPixi {
         }
     }
 
+    private final IUrlParametersManager urlParametersManager;
     private final Provider<DefaultDemo> defaultDemoProvider;
 
     @FunctionalInterface
@@ -57,8 +59,10 @@ public class DemoPixi {
 
     @Inject
     DemoPixi(
+            final IUrlParametersManager urlParametersManager,
             final Provider<DefaultDemo> defaultDemoProvider
             ){
+        this.urlParametersManager = urlParametersManager;
         this.defaultDemoProvider = defaultDemoProvider;
     }
 
@@ -66,7 +70,15 @@ public class DemoPixi {
 
     public void initialize() {
         LOG.info("INJECTION STARTED");
-        this.defaultDemoProvider.get().initialize();
+        String type = urlParametersManager.getParameter("autorun");
+        switch (type) {
+           case "mrtn":
+               LOG.severe("dorob si uvod!");
+               break;
+            default:
+                this.defaultDemoProvider.get().initialize();
+        }
+
 
     }
 
