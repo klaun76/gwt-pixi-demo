@@ -20,6 +20,9 @@ public interface IResources extends ClientBundle {
     @Source("buble_coin_atlas_d-1080_0.json")
     TextureAtlasResource bubblesAndCoinAnims();
 
+    @Source("lastGuardianAvatars.json")
+    TextureAtlasResource lastGuardianAvatars();
+
     @Source("bunny.png")
     ImageResource bunny();
 

@@ -1,4 +1,4 @@
-package sk.mrtn.demo.pixi.client;
+package sk.mrtn.demo.pixi.client.defaultdemo;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -7,6 +7,10 @@ import elemental.client.Browser;
 import elemental.css.CSSStyleDeclaration;
 import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
+import sk.mrtn.demo.pixi.client.DemoPixi;
+import sk.mrtn.demo.pixi.client.IResources;
+import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
+import sk.mrtn.demo.pixi.client.ParticleBuilder;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
@@ -35,7 +39,7 @@ public class DefaultDemo {
     private static Logger LOG;
     static {
         if (LogConfiguration.loggingIsEnabled()) {
-            LOG = Logger.getLogger(DemoPixi.class.getSimpleName());
+            LOG = Logger.getLogger(DefaultDemo.class.getSimpleName());
             LOG.setLevel(Level.ALL);
         }
     }
