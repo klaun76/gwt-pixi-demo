@@ -7,10 +7,7 @@ import elemental.client.Browser;
 import elemental.css.CSSStyleDeclaration;
 import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
-import sk.mrtn.demo.pixi.client.DemoPixi;
-import sk.mrtn.demo.pixi.client.IResources;
-import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
-import sk.mrtn.demo.pixi.client.ParticleBuilder;
+import sk.mrtn.demo.pixi.client.*;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
@@ -32,7 +29,7 @@ import java.util.logging.Logger;
 /**
  * Created by martinliptak on 12/09/16.
  */
-public class DefaultDemo {
+public class DefaultDemo extends ADemo {
 
 
     private static Logger LOG;
@@ -47,9 +44,6 @@ public class DefaultDemo {
     private final MultiParticleBuilder multiParticleBuilder;
     private final Ticker ticker;
 
-    private PIXI pixi;
-    private Renderer renderer;
-    private Container stage;
     private Sprite bunnySprite;
     private final DivElement fpsNode;
 
@@ -93,10 +87,7 @@ public class DefaultDemo {
     }
 
     private void buildStage() {
-        stage = new Container();
-        this.pixi = PixiEntryPoint.getPixi();
-        renderer = this.pixi.autoDetectRenderer(800, 600);
-        Browser.getDocument().getBody().appendChild(renderer.view);
+        createAndAppendStage(800,600);
 
         Sprite background = createBackground();
 

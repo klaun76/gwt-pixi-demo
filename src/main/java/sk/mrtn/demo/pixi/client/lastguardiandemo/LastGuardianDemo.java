@@ -3,6 +3,7 @@ package sk.mrtn.demo.pixi.client.lastguardiandemo;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import elemental.client.Browser;
+import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.IResources;
 import sk.mrtn.pixi.client.*;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 /**
  * Created by martinliptak on 12/09/16.
  */
-public class LastGuardianDemo {
+public class LastGuardianDemo extends ADemo {
 
 
     private static Logger LOG;
@@ -34,10 +35,6 @@ public class LastGuardianDemo {
 
     private final Ticker ticker;
     private final Provider<Avatar> avatarProvider;
-
-    private PIXI pixi;
-    private Renderer renderer;
-    private Container stage;
 
     @Inject
     LastGuardianDemo(
@@ -65,10 +62,7 @@ public class LastGuardianDemo {
     }
 
     private void buildStage() {
-        stage = new Container();
-        this.pixi = PixiEntryPoint.getPixi();
-        renderer = this.pixi.autoDetectRenderer(800, 600);
-        Browser.getDocument().getBody().appendChild(renderer.view);
+        createAndAppendStage(800,600);
         List<Avatar> avatars = new ArrayList<>();
 
         for (String avatarFrame : DemoPixi.RES.lastGuardianAvatars().getFrames()) {
