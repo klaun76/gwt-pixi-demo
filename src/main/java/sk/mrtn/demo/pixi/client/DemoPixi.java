@@ -3,6 +3,7 @@ package sk.mrtn.demo.pixi.client;
 import com.google.gwt.logging.client.LogConfiguration;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
+import sk.mrtn.demo.pixi.client.unittests.UnitTests;
 import sk.mrtn.library.client.utils.IUrlParametersManager;
 
 import javax.inject.Inject;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class DemoPixi {
 
-    private static IResources RES = IResources.impl;
+    public static IResources RES = IResources.impl;
     private static Logger LOG;
     static {
         if (LogConfiguration.loggingIsEnabled()) {
@@ -28,25 +29,30 @@ public class DemoPixi {
     private final IUrlParametersManager urlParametersManager;
     private final Provider<DefaultDemo> defaultDemoProvider;
     private final Provider<LastGuardianDemo> lastGuardianDemoProvider;
+    private final Provider<UnitTests> unitTestsProvider;
 
     @Inject
     DemoPixi(
             final IUrlParametersManager urlParametersManager,
             final Provider<DefaultDemo> defaultDemoProvider,
-            final Provider<LastGuardianDemo> lastGuardianDemoProvider
+            final Provider<LastGuardianDemo> lastGuardianDemoProvider,
+            final Provider<UnitTests> unitTestsProvider
             ){
         this.urlParametersManager = urlParametersManager;
         this.defaultDemoProvider = defaultDemoProvider;
         this.lastGuardianDemoProvider = lastGuardianDemoProvider;
+        this.unitTestsProvider = unitTestsProvider;
     }
-
-
 
     public void initialize() {
         LOG.info("INJECTION STARTED");
+        setStage();
         String type = urlParametersManager.getParameter("autorun");
         switch (type) {
-           case "lastguardian":
+            case "unittests":
+                this.unitTestsProvider.get().initialize();
+                break;
+            case "lastguardian":
                lastGuardianDemoProvider.get().initialize();
                break;
             default:
@@ -54,6 +60,10 @@ public class DemoPixi {
         }
 
 
+    }
+
+    private void setStage() {
+        RES.main().ensureInjected();
     }
 
 }

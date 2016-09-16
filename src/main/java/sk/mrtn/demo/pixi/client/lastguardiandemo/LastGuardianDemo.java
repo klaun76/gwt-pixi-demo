@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 public class LastGuardianDemo {
 
 
-    private static IResources RES = IResources.impl;
     private static Logger LOG;
     static {
         if (LogConfiguration.loggingIsEnabled()) {
@@ -57,7 +56,7 @@ public class LastGuardianDemo {
 
     private void loadResources() {
         Loader aLoader = new Loader();
-        for (SafeUri safeUri : RES.lastGuardianAvatars().getSafeUris()) {
+        for (SafeUri safeUri : DemoPixi.RES.lastGuardianAvatars().getSafeUris()) {
             aLoader.add(safeUri.asString());
         }
         aLoader.load((loader, resources) -> {
@@ -72,7 +71,7 @@ public class LastGuardianDemo {
         Browser.getDocument().getBody().appendChild(renderer.view);
         List<Avatar> avatars = new ArrayList<>();
 
-        for (String avatarFrame : RES.lastGuardianAvatars().getFrames()) {
+        for (String avatarFrame : DemoPixi.RES.lastGuardianAvatars().getFrames()) {
             String[] split = avatarFrame.split("_");
             String name = split[0];
             boolean exists = false;

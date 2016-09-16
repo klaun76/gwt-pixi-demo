@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 public class DefaultDemo {
 
 
-    private static IResources RES = IResources.impl;
     private static Logger LOG;
     static {
         if (LogConfiguration.loggingIsEnabled()) {
@@ -79,12 +78,12 @@ public class DefaultDemo {
 
     private void loadResources() {
         Loader aLoader = new Loader();
-        aLoader.add("bunny",RES.bunny().getSafeUri().asString());
-        aLoader.add("spices3",RES.spices3().getSafeUri().asString());
-        for (SafeUri safeUri : RES.goldAnim().getSafeUris()) {
+        aLoader.add("bunny",DemoPixi.RES.bunny().getSafeUri().asString());
+        aLoader.add("spices3",DemoPixi.RES.spices3().getSafeUri().asString());
+        for (SafeUri safeUri : DemoPixi.RES.goldAnim().getSafeUris()) {
             aLoader.add(safeUri.asString());
         }
-        for (SafeUri safeUri : RES.bubblesAndCoinAnims().getSafeUris()) {
+        for (SafeUri safeUri : DemoPixi.RES.bubblesAndCoinAnims().getSafeUris()) {
             aLoader.add(safeUri.asString());
         }
         aLoader.load((loader, resources) -> {
@@ -121,19 +120,19 @@ public class DefaultDemo {
     }
 
     private Sprite createBackground() {
-        Sprite background = createSprite(RES.spices3().getSafeUri().asString());
+        Sprite background = createSprite(DemoPixi.RES.spices3().getSafeUri().asString());
         stage.addChild(background);
         return background;
     }
 
     private void createBunnies() {
-        bunnySprite = createSprite(RES.bunny().getSafeUri().asString());
+        bunnySprite = createSprite(DemoPixi.RES.bunny().getSafeUri().asString());
         bunnySprite.name = "bunny1";
         bunnySprite.position.set(100,100);
         bunnySprite.anchor.set(0.5,0.5);
         stage.addChild(bunnySprite);
 
-        Sprite bunnySprite2 = createSprite(RES.bunny().getSafeUri().asString());
+        Sprite bunnySprite2 = createSprite(DemoPixi.RES.bunny().getSafeUri().asString());
         bunnySprite2.position.set(200,100);
         bunnySprite2.anchor.set(0.5,0.5);
         bunnySprite2.name = "bunny2";
@@ -141,8 +140,8 @@ public class DefaultDemo {
     }
 
     private void testParticleBuilder() {
-        String emitterConfig = RES.goldEmitter().getText();
-        TextureAtlasResource textureAtlasResource = RES.goldAnim();
+        String emitterConfig = DemoPixi.RES.goldEmitter().getText();
+        TextureAtlasResource textureAtlasResource = DemoPixi.RES.goldAnim();
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
         stage.addChild(particleBuilder.getContainer());
         particleBuilder.getContainer().position.set(300,300);
@@ -150,9 +149,9 @@ public class DefaultDemo {
     }
 
     private void testEmitters() {
-        EmitterConfig config = EmitterConfig.parse(RES.goldEmitter().getText());
+        EmitterConfig config = EmitterConfig.parse(DemoPixi.RES.goldEmitter().getText());
         LOG.fine("EmitterConfig test: "+config.color.start+":"+config.color.end);
-        Texture texture = Texture.fromImage(RES.bunny().getSafeUri().asString());
+        Texture texture = Texture.fromImage(DemoPixi.RES.bunny().getSafeUri().asString());
         Container particleContainer = new Container();
         stage.addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
@@ -169,11 +168,11 @@ public class DefaultDemo {
 
         Map<String,List<AnimatedParticleArtTextureNames>> configToArtsMap = new HashMap<>();
 
-        String emitterConfig1 = RES.goldEmitter().getText();
-        String emitterConfig2 = RES.bubblesEmitter().getText();
+        String emitterConfig1 = DemoPixi.RES.goldEmitter().getText();
+        String emitterConfig2 = DemoPixi.RES.bubblesEmitter().getText();
         List<AnimatedParticleArtTextureNames> arts1 = new ArrayList<>();
         List<AnimatedParticleArtTextureNames> arts2 = new ArrayList<>();
-//        List<String> frames = RES.bubblesAndCoinAnims().getFrames();
+//        List<String> frames = DemoPixi.RES.bubblesAndCoinAnims().getFrames();
 
         //coins anim
         AnimatedParticleArtTextureNames art1 = new AnimatedParticleArtTextureNames();
