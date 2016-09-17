@@ -4,6 +4,8 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
+import sk.mrtn.library.client.ticker.ITickable;
+import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Sprite;
 import sk.mrtn.pixi.client.Texture;
 import sk.mrtn.pixi.client.extras.MovieClip;
@@ -11,6 +13,7 @@ import sk.mrtn.pixi.client.loaders.Loader;
 import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +37,12 @@ public class TokiToriDemo extends ADemo {
     }
 
     private static ITokiToriResources RES = ITokiToriResources.impl;
+    private final ITicker ticker;
 
-    private final Ticker ticker;
 
     @Inject
     TokiToriDemo(
-            final Ticker ticker
+            final ITicker ticker
             ){
         this.ticker = ticker;
     }
@@ -102,11 +105,19 @@ public class TokiToriDemo extends ADemo {
             counter ++;
         }
 
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                renderer.render(stage);
+            }
 
-        ticker.add(difference -> {
-            renderer.render(stage);
+            @Override
+            public boolean shouldTick() {
+                return true;
+            }
         });
-        ticker.start();
+        this.ticker.start();
+
     }
 
     private void updateAnimations(List<Animation> animations, String name, String frame) {

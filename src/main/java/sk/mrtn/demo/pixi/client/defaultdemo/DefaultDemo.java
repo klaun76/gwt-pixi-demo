@@ -3,12 +3,17 @@ package sk.mrtn.demo.pixi.client.defaultdemo;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Timer;
-import elemental.client.Browser;
-import elemental.css.CSSStyleDeclaration;
-import elemental.html.DivElement;
 import jsinterop.annotations.JsMethod;
-import sk.mrtn.demo.pixi.client.*;
-import sk.mrtn.pixi.client.*;
+import sk.mrtn.demo.pixi.client.ADemo;
+import sk.mrtn.demo.pixi.client.DemoPixi;
+import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
+import sk.mrtn.demo.pixi.client.ParticleBuilder;
+import sk.mrtn.library.client.ticker.ITickable;
+import sk.mrtn.library.client.ticker.ITicker;
+import sk.mrtn.pixi.client.Container;
+import sk.mrtn.pixi.client.Point;
+import sk.mrtn.pixi.client.Sprite;
+import sk.mrtn.pixi.client.Texture;
 import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
 import sk.mrtn.pixi.client.particles.AnimatedParticleArtTextureNames;
@@ -16,7 +21,6 @@ import sk.mrtn.pixi.client.particles.Emitter;
 import sk.mrtn.pixi.client.particles.RepetitiveTexture;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
-import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -42,33 +46,22 @@ public class DefaultDemo extends ADemo {
 
     private final ParticleBuilder particleBuilder;
     private final MultiParticleBuilder multiParticleBuilder;
-    private final Ticker ticker;
+    private final ITicker ticker;
 
     private Sprite bunnySprite;
-    private final DivElement fpsNode;
 
-    @FunctionalInterface
-    private interface IButtonCommand{
-        void run();
-    }
     @Inject
     DefaultDemo(
             final ParticleBuilder particleBuilder,
             final MultiParticleBuilder multiParticleBuilder,
-            final Ticker ticker
+            final ITicker ticker
     ){
         this.particleBuilder = particleBuilder;
         this.multiParticleBuilder = multiParticleBuilder;
         this.ticker = ticker;
-//        InterfaceReader.parseObjectAndOutputToConsole( new Stats(), "Stats");
         loadResources();
 
-        fpsNode = Browser.getDocument().createDivElement();
-        fpsNode.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
-        Browser.getDocument().getBody().appendChild(fpsNode);
     }
-
-
 
     private void loadResources() {
         Loader aLoader = new Loader();
@@ -96,18 +89,27 @@ public class DefaultDemo extends ADemo {
         renderer.render(stage);
 
         testFilters(background);
+
         testHandlers();
 
         testEmitters();
-//        testParticleBuilder();
+
+        testParticleBuilder();
+
         testMultiEmitters();
 
-        ticker.add(difference -> {
-            double fps = Math.round((1000 / ticker.elapsedMS) * 100.0) / 100.0;
-            fpsNode.setTextContent("fps: "+fps);
-            renderer.render(stage);
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                renderer.render(stage);
+            }
+
+            @Override
+            public boolean shouldTick() {
+                return false;
+            }
         });
-        ticker.start();
+        this.ticker.start();
     }
 
     private Sprite createBackground() {
@@ -136,7 +138,18 @@ public class DefaultDemo extends ADemo {
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
         stage.addChild(particleBuilder.getContainer());
         particleBuilder.getContainer().position.set(300,300);
-        this.ticker.add(difference -> particleBuilder.getEmitter().update(DefaultDemo.this.ticker.elapsedMS * 0.001));
+
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                particleBuilder.getEmitter().update(ticker.getDeltaTick() * 0.001);
+            }
+
+            @Override
+            public boolean shouldTick() {
+                return true;
+            }
+        });
     }
 
     private void testEmitters() {
@@ -147,8 +160,16 @@ public class DefaultDemo extends ADemo {
         stage.addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
         particleContainer.position.set(300,300);
-        this.ticker.add(difference -> {
-            emitter.update(DefaultDemo.this.ticker.elapsedMS * 0.001);
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                emitter.update(ticker.getDeltaTick() * 0.001);
+            }
+
+            @Override
+            public boolean shouldTick() {
+                return true;
+            }
         });
     }
 
@@ -195,7 +216,18 @@ public class DefaultDemo extends ADemo {
         multiParticleBuilder.initialize(configToArtsMap);
         stage.addChild(multiParticleBuilder.getContainer());
         multiParticleBuilder.getContainer().position.set(stage.getBounds().width/2, stage.getBounds().height/2);
-        this.ticker.add(difference -> multiParticleBuilder.update(DefaultDemo.this.ticker.elapsedMS * 0.001));
+//        this.ticker.add(difference -> multiParticleBuilder.update(DefaultDemo.this.ticker.elapsedMS * 0.001));
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                multiParticleBuilder.update(ticker.getDeltaTick() * 0.001);
+            }
+
+            @Override
+            public boolean shouldTick() {
+                return true;
+            }
+        });
     }
 
     public static native void logg(Object object) /*-{
@@ -203,9 +235,10 @@ public class DefaultDemo extends ADemo {
     }-*/;
 
     private void testHandlers() {
-        bunnySprite.interactive = true;
-        bunnySprite.mousedown = (eventData) -> LOG.fine("mousedown "+eventData.target.name);
-        bunnySprite.click = eventData -> LOG.fine("click "+eventData.target.name);
+        LOG.warning("interactivity logic changed, must check and rebuild test");
+//        bunnySprite.interactive = true;
+//        bunnySprite.mousedown = (eventData) -> LOG.fine("mousedown "+eventData.target.name);
+//        bunnySprite.click = (eventData) -> LOG.fine("click "+eventData.target.name);
     }
 
     private void testFilters(Sprite sprite) {
@@ -241,12 +274,6 @@ public class DefaultDemo extends ADemo {
             }
         }.schedule(3000);
     }
-
-    private void testFilters() {
-
-    }
-    @JsMethod(namespace = "console")
-    public static native void log(Object... object);
 
     private Sprite createSprite(String textureName) {
         Texture texture = Texture.fromImage(textureName);

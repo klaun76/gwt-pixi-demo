@@ -6,6 +6,8 @@ import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.IResources;
+import sk.mrtn.library.client.ticker.ITickable;
+import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.extras.MovieClip;
 import sk.mrtn.pixi.client.loaders.Loader;
@@ -33,12 +35,12 @@ public class LastGuardianDemo extends ADemo {
         }
     }
 
-    private final Ticker ticker;
+    private final ITicker ticker;
     private final Provider<Avatar> avatarProvider;
 
     @Inject
     LastGuardianDemo(
-            final Ticker ticker,
+            final ITicker ticker,
             final Provider<Avatar> avatarProvider
             ){
         this.ticker = ticker;
@@ -110,10 +112,18 @@ public class LastGuardianDemo extends ADemo {
 
         renderer.render(stage);
 
-        ticker.add(difference -> {
-            renderer.render(stage);
+        this.ticker.addTickable(new ITickable() {
+            @Override
+            public void update(ITicker ticker) {
+                renderer.render(stage);
+            }
+
+            @Override
+            public boolean shouldTick() {
+                return true;
+            }
         });
-        ticker.start();
+        this.ticker.start();
     }
 
     public static native void log(Object object) /*-{

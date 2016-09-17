@@ -4,6 +4,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.ADemo;
+import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.loaders.Loader;
 
