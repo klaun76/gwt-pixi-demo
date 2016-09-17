@@ -16,7 +16,7 @@ version '1.0-SNAPSHOT'
 
 ext {
 
-    daggerVersion  = "2.6.1"
+    daggerVersion  = "2.7"
     gwtVersion     = "2.8.0-rc2"
     guavaVersion   = "19.0"
     putnamiVersion = "0.3.0"
