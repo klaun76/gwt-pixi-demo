@@ -1,5 +1,5 @@
-rootProject.name = 'pixi-gwt-demo'
-include ":pixi-gwt"
-project(":pixi-gwt").projectDir = file("../pixi-gwt")
+rootProject.name = 'gwt-pixi-demo'
+include ":gwt-pixi"
+project(":gwt-pixi").projectDir = file("../gwt-pixi")
 include ":library"
 project(":library").projectDir = file("../library")
