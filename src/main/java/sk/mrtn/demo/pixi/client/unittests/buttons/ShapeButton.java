@@ -1,5 +1,6 @@
 package sk.mrtn.demo.pixi.client.unittests.buttons;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
 import sk.mrtn.library.client.utils.mobiledetect.MobileDetect;
@@ -82,15 +83,25 @@ public class ShapeButton implements IShapeButton {
         $wnd.console.log(object);
     }-*/;
 
+    /**
+     * warn shape outline is half inside, half outside.
+     * positioning fixed here by shifing top left by half line widht
+     * @param width
+     * @param height
+     * @param radius
+     * @param color
+     * @return
+     */
     private Graphics createBackground(double width, double height, double radius, Color color) {
         Graphics graphics = new Graphics();
 
         // draw a rounded rectangle
-        graphics.lineStyle(4, color.getColors()[0], 1);
+        int lineWidth = 6;
+        graphics.lineStyle(lineWidth, color.getColors()[0], 1);
         graphics.beginFill(color.getColors()[1], 1);
-        graphics.drawRoundedRect(0, 0, width, height, radius);
+        graphics.drawRoundedRect(0, 0, width-lineWidth, height-lineWidth, radius);
         graphics.endFill();
-
+        graphics.position.set(lineWidth/2,lineWidth/2);
         this.container.addChild(graphics);
         return graphics;
     }
@@ -112,7 +123,6 @@ public class ShapeButton implements IShapeButton {
             textOptions.fontSize = 20;
             textOptions.align = "center";
         }
-//        textOptions.lineHeight = textOptions.fontSize;
         Text text = new Text(label,new TextStyle(textOptions));
         text.anchor.set(0.5,0.5);
         log(text.style);

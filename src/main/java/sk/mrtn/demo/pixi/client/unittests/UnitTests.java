@@ -74,23 +74,24 @@ public class UnitTests extends ADemo {
     }
 
     private void addButton() {
-        double height = 50;
+        double width = 256;
+        double height = 64;
         Point point = new Point(512, 512);
-        IShapeButton green = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.GREEN, "green\nbutton");
+        IShapeButton green = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.GREEN, "green\nbutton");
         green.asDisplayObject().position = point.clone();
         this.stage.addChild(green.asDisplayObject());
 
-        IShapeButton red = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.RED, "q red");
+        IShapeButton red = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.RED, "q red");
         point.set(point.x,point.y+height*1.2);
         red.asDisplayObject().position = point.clone();
         this.stage.addChild(red.asDisplayObject());
 
-        IShapeButton blue = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.BLUE, "blue Q");
+        IShapeButton blue = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.BLUE, "blue Q");
         point.set(point.x,point.y+height*1.2);
         blue.asDisplayObject().position = point.clone();
         this.stage.addChild(blue.asDisplayObject());
 
-        IShapeButton violet = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.VIOLET, "VIOLET");
+        IShapeButton violet = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.VIOLET, "VIOLET");
         point.set(point.x,point.y+height*1.2);
         violet.asDisplayObject().position = point.clone();
         this.stage.addChild(violet.asDisplayObject());
