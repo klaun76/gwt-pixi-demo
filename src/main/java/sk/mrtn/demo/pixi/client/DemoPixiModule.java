@@ -2,6 +2,8 @@ package sk.mrtn.demo.pixi.client;
 
 import dagger.Module;
 import dagger.Provides;
+import sk.mrtn.demo.pixi.client.unittests.buttons.IShapeButton;
+import sk.mrtn.demo.pixi.client.unittests.buttons.ShapeButton;
 import sk.mrtn.library.client.UtilsModule;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.library.client.ticker.Ticker;
@@ -20,6 +22,11 @@ public class DemoPixiModule {
     @Singleton
     ITicker providesTicker(Ticker ticker) {
         return ticker;
+    }
+
+    @Provides
+    IShapeButton providesIShapeButton(ShapeButton shapeButton) {
+        return shapeButton;
     }
 
 }

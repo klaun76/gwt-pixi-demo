@@ -1,10 +1,10 @@
 package sk.mrtn.demo.pixi.client.unittests;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
-import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.ADemo;
-import sk.mrtn.library.client.ticker.ITicker;
+import sk.mrtn.demo.pixi.client.unittests.buttons.IShapeButton;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.loaders.Loader;
 
@@ -29,16 +29,17 @@ public class UnitTests extends ADemo {
     }
 
     private final SpriteFactory spriteFactory;
+    private final Provider<IShapeButton> shapeButtonProvider;
     private final Provider<TextureUnitTest> textureUnitTestProvider;
-
-
 
     @Inject
     UnitTests(
             final SpriteFactory spriteFactory,
+            final Provider<IShapeButton> shapeButtonProvider,
             final Provider<TextureUnitTest> textureUnitTestProvider
             ){
         this.spriteFactory = spriteFactory;
+        this.shapeButtonProvider = shapeButtonProvider;
         this.textureUnitTestProvider = textureUnitTestProvider;
     }
 
@@ -63,9 +64,71 @@ public class UnitTests extends ADemo {
     protected void buildStage() {
         createAndAppendStage(1024,1024);
         createTexturesFromImage();
-        renderer.render(stage);
         addAlignmentTest();
+        drawShapes();
+        addButton();
         renderer.render(stage);
+
+        Container container = new Container();
+        log(container);
+    }
+
+    private void addButton() {
+        double height = 50;
+        Point point = new Point(512, 512);
+        IShapeButton green = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.GREEN, "green\nbutton");
+        green.asDisplayObject().position = point.clone();
+        this.stage.addChild(green.asDisplayObject());
+
+        IShapeButton red = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.RED, "q red");
+        point.set(point.x,point.y+height*1.2);
+        red.asDisplayObject().position = point.clone();
+        this.stage.addChild(red.asDisplayObject());
+
+        IShapeButton blue = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.BLUE, "blue Q");
+        point.set(point.x,point.y+height*1.2);
+        blue.asDisplayObject().position = point.clone();
+        this.stage.addChild(blue.asDisplayObject());
+
+        IShapeButton violet = this.shapeButtonProvider.get().create(200, height, 10, IShapeButton.Color.VIOLET, "VIOLET");
+        point.set(point.x,point.y+height*1.2);
+        violet.asDisplayObject().position = point.clone();
+        this.stage.addChild(violet.asDisplayObject());
+    }
+
+    /**
+     * @see <a href="https://pixijs.github.io/examples/#/basics/graphics.js">Graphic demo</a>
+     */
+    private void drawShapes() {
+        Graphics graphics = new Graphics();
+        graphics.beginFill(0xFF3300,0.5);
+        graphics.lineStyle(4, 0xffd900, 1);
+
+        // draw a shape
+        graphics.moveTo(50,50);
+        graphics.lineTo(250, 50);
+        graphics.lineTo(100, 100);
+        graphics.lineTo(50, 50);
+        graphics.endFill();
+
+        // set a fill and a line style again and draw a rectangle
+        graphics.lineStyle(2, 0x0000FF, 1);
+        graphics.beginFill(0xFF700B, 1);
+        graphics.drawRect(50, 250, 120, 120);
+
+        // draw a rounded rectangle
+        graphics.lineStyle(2, 0xFF00FF, 1);
+        graphics.beginFill(0xFF00BB, 0.25);
+        graphics.drawRoundedRect(150, 450, 300, 100, 15);
+        graphics.endFill();
+
+        // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+        graphics.lineStyle(0);
+        graphics.beginFill(0xFFFF0B, 0.5);
+        graphics.drawCircle(470, 90,60);
+        graphics.endFill();
+
+        this.stage.addChild(graphics);
     }
 
     private void createTexturesFromImage() {

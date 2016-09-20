@@ -19,7 +19,7 @@ public abstract class AUnitTest {
             throw new NullPointerException("logging disabled, unit tests not relevant");
         }
         LOG = Logger.getLogger(getClass().getSimpleName()+"."+label);
-        LOG.setLevel(Level.ALL);
+        LOG.setLevel(Level.OFF);
     }
 
     public static native void log(Object object) /*-{
