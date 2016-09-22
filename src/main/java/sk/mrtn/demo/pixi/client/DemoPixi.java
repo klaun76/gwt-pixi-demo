@@ -2,6 +2,7 @@ package sk.mrtn.demo.pixi.client;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import elemental.client.Browser;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
 import sk.mrtn.demo.pixi.client.tokitori.TokiToriDemo;
@@ -34,10 +35,12 @@ public class DemoPixi {
     private final Provider<LastGuardianDemo> lastGuardianDemoProvider;
     private final Provider<UnitTests> unitTestsProvider;
     private final Provider<TokiToriDemo> tokiToriDemoProvider;
+    private final IStage stage;
     private final Stats stats;
 
     @Inject
     DemoPixi(
+            final IStage stage,
             final Stats stats,
             final IUrlParametersManager urlParametersManager,
             final Provider<DefaultDemo> defaultDemoProvider,
@@ -45,6 +48,7 @@ public class DemoPixi {
             final Provider<UnitTests> unitTestsProvider,
             final Provider<TokiToriDemo> tokiToriDemoProvider
     ){
+        this.stage = stage;
         this.stats = stats;
         this.urlParametersManager = urlParametersManager;
         this.defaultDemoProvider = defaultDemoProvider;
@@ -55,7 +59,8 @@ public class DemoPixi {
 
     public void initialize() {
         LOG.info("INJECTION STARTED");
-        setStage();
+        this.stage.initialize(1024,1024);
+        RES.main().ensureInjected();
         String type = urlParametersManager.getParameter("autorun");
         switch (type) {
             case "tokitori":
@@ -73,10 +78,6 @@ public class DemoPixi {
         if (urlParametersManager.getParameter("dstats") == "true") {
             Browser.getDocument().getBody().appendChild(stats.getDom());
         }
-    }
-
-    private void setStage() {
-        RES.main().ensureInjected();
     }
 
     public static native void log(Object object) /*-{

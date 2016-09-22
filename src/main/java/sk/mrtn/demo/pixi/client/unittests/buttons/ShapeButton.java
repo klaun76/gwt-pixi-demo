@@ -3,12 +3,14 @@ package sk.mrtn.demo.pixi.client.unittests.buttons;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
+import sk.mrtn.library.client.utils.Tag;
 import sk.mrtn.library.client.utils.mobiledetect.MobileDetect;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.interaction.EventListener;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,6 +50,7 @@ public class ShapeButton implements IShapeButton {
             String label
     ) {
         this.container = createContainer();
+        this.container.setTags(new ArrayList<>(Arrays.asList(Tag.get("ShapeButton"))));
         this.background = createBackground(width, height, radius, color);
         if (label != null) {
             Text label1 = createLabel(label);

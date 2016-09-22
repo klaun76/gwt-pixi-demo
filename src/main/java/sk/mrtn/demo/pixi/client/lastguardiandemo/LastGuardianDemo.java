@@ -6,6 +6,7 @@ import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.IResources;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.*;
@@ -40,9 +41,12 @@ public class LastGuardianDemo extends ADemo {
 
     @Inject
     LastGuardianDemo(
+            final IStage stage,
             final ITicker ticker,
             final Provider<Avatar> avatarProvider
-            ){
+    ){
+        super(stage);
+
         this.ticker = ticker;
 
         this.avatarProvider = avatarProvider;
@@ -64,7 +68,6 @@ public class LastGuardianDemo extends ADemo {
     }
 
     private void buildStage() {
-        createAndAppendStage(800,600);
         List<Avatar> avatars = new ArrayList<>();
 
         for (String avatarFrame : DemoPixi.RES.lastGuardianAvatars().getFrames()) {
@@ -87,35 +90,35 @@ public class LastGuardianDemo extends ADemo {
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getFront(), counter);
-            this.stage.addChild(sprite);
+            this.stage.getStage().addChild(sprite);
             counter++;
         }
 
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getRight(), counter);
-            this.stage.addChild(sprite);
+            this.stage.getStage().addChild(sprite);
             counter++;
         }
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getLeft(), counter);
-            this.stage.addChild(sprite);
+            this.stage.getStage().addChild(sprite);
             counter++;
         }
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getBack(), counter);
-            this.stage.addChild(sprite);
+            this.stage.getStage().addChild(sprite);
             counter++;
         }
 
-        renderer.render(stage);
+        this.stage.render();
 
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
-                renderer.render(stage);
+                stage.render();
             }
 
             @Override

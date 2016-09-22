@@ -2,6 +2,8 @@ package sk.mrtn.demo.pixi.client;
 
 import dagger.Module;
 import dagger.Provides;
+import sk.mrtn.demo.pixi.client.common.DefaultStage;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.unittests.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.unittests.buttons.ShapeButton;
 import sk.mrtn.library.client.UtilsModule;
@@ -27,6 +29,12 @@ public class DemoPixiModule {
     @Provides
     IShapeButton providesIShapeButton(ShapeButton shapeButton) {
         return shapeButton;
+    }
+
+    @Provides
+    @Singleton
+    IStage providesIstage(final DefaultStage stage){
+        return stage;
     }
 
 }

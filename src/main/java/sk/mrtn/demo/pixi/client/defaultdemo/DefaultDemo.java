@@ -8,6 +8,7 @@ import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
 import sk.mrtn.demo.pixi.client.ParticleBuilder;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Container;
@@ -52,10 +53,12 @@ public class DefaultDemo extends ADemo {
 
     @Inject
     DefaultDemo(
+            final IStage stage,
             final ParticleBuilder particleBuilder,
             final MultiParticleBuilder multiParticleBuilder,
             final ITicker ticker
     ){
+        super(stage);
         this.particleBuilder = particleBuilder;
         this.multiParticleBuilder = multiParticleBuilder;
         this.ticker = ticker;
@@ -80,13 +83,12 @@ public class DefaultDemo extends ADemo {
     }
 
     private void buildStage() {
-        createAndAppendStage(800,600);
 
         Sprite background = createBackground();
 
         createBunnies();
 
-        renderer.render(stage);
+        this.stage.render();
 
         testFilters(background);
 
@@ -101,7 +103,7 @@ public class DefaultDemo extends ADemo {
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
-                renderer.render(stage);
+                stage.render();
             }
 
             @Override
@@ -114,7 +116,7 @@ public class DefaultDemo extends ADemo {
 
     private Sprite createBackground() {
         Sprite background = createSprite(DemoPixi.RES.spices3().getSafeUri().asString());
-        stage.addChild(background);
+        stage.getStage().addChild(background);
         return background;
     }
 
@@ -123,20 +125,20 @@ public class DefaultDemo extends ADemo {
         bunnySprite.name = "bunny1";
         bunnySprite.position.set(100,100);
         bunnySprite.anchor.set(0.5,0.5);
-        stage.addChild(bunnySprite);
+        stage.getStage().addChild(bunnySprite);
 
         Sprite bunnySprite2 = createSprite(DemoPixi.RES.bunny().getSafeUri().asString());
         bunnySprite2.position.set(200,100);
         bunnySprite2.anchor.set(0.5,0.5);
         bunnySprite2.name = "bunny2";
-        stage.addChild(bunnySprite2);
+        stage.getStage().addChild(bunnySprite2);
     }
 
     private void testParticleBuilder() {
         String emitterConfig = DemoPixi.RES.goldEmitter().getText();
         TextureAtlasResource textureAtlasResource = DemoPixi.RES.goldAnim();
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
-        stage.addChild(particleBuilder.getContainer());
+        stage.getStage().addChild(particleBuilder.getContainer());
         particleBuilder.getContainer().position.set(300,300);
 
         this.ticker.addTickable(new ITickable() {
@@ -157,7 +159,7 @@ public class DefaultDemo extends ADemo {
         LOG.fine("EmitterConfig test: "+config.color.start+":"+config.color.end);
         Texture texture = Texture.fromImage(DemoPixi.RES.bunny().getSafeUri().asString());
         Container particleContainer = new Container();
-        stage.addChild(particleContainer);
+        stage.getStage().addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
         particleContainer.position.set(300,300);
         this.ticker.addTickable(new ITickable() {
@@ -214,8 +216,8 @@ public class DefaultDemo extends ADemo {
         configToArtsMap.put(emitterConfig2,arts2);
 
         multiParticleBuilder.initialize(configToArtsMap);
-        stage.addChild(multiParticleBuilder.getContainer());
-        multiParticleBuilder.getContainer().position.set(stage.getBounds().width/2, stage.getBounds().height/2);
+        stage.getStage().addChild(multiParticleBuilder.getContainer());
+        multiParticleBuilder.getContainer().position.set(stage.getStage().getBounds().width/2, stage.getStage().getBounds().height/2);
 //        this.ticker.add(difference -> multiParticleBuilder.update(DefaultDemo.this.ticker.elapsedMS * 0.001));
         this.ticker.addTickable(new ITickable() {
             @Override
@@ -245,7 +247,7 @@ public class DefaultDemo extends ADemo {
         ColorMatrixFilter filter = new ColorMatrixFilter();
         filter.predator(0.5,true);
         sprite.addFilter(filter);
-        renderer.render(stage);
+        this.stage.render();
 
         new Timer() {
             @Override
@@ -253,7 +255,7 @@ public class DefaultDemo extends ADemo {
                 ColorMatrixFilter colorMatrixFilter = new ColorMatrixFilter();
                 colorMatrixFilter.lsd(false);
                 bunnySprite.addFilter(colorMatrixFilter);
-                renderer.render(stage);
+                stage.render();
             }
         }.schedule(1000);
 
@@ -262,7 +264,7 @@ public class DefaultDemo extends ADemo {
             public void run() {
                 filter.reset();
                 filter.kodachrome(true);
-                renderer.render(stage);
+                stage.render();
             }
         }.schedule(2000);
 
@@ -270,7 +272,7 @@ public class DefaultDemo extends ADemo {
             @Override
             public void run() {
                 bunnySprite.scale = new Point(2,2);
-                renderer.render(stage);
+                stage.render();
             }
         }.schedule(3000);
     }

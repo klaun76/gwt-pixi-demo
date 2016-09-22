@@ -4,6 +4,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Sprite;
@@ -42,8 +43,10 @@ public class TokiToriDemo extends ADemo {
 
     @Inject
     TokiToriDemo(
+            final IStage stage,
             final ITicker ticker
-            ){
+    ){
+        super(stage);
         this.ticker = ticker;
     }
 
@@ -85,7 +88,6 @@ public class TokiToriDemo extends ADemo {
     }
 
     private void buildStage() {
-        createAndAppendStage(400,400);
 
         List<Animation> animations = new ArrayList<>();
 
@@ -101,14 +103,14 @@ public class TokiToriDemo extends ADemo {
         for (Animation animation : animations) {
             animation.build();
             MovieClip sprite = createMovieClip(animation.textures, counter);
-            this.stage.addChild(sprite);
+            this.stage.getStage().addChild(sprite);
             counter ++;
         }
 
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
-                renderer.render(stage);
+                stage.render();
             }
 
             @Override
