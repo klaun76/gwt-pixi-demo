@@ -21,7 +21,7 @@ public class TextureUnitTest extends AUnitTest {
         this.texture = texture;
         this.width = width;
         this.height = height;
-        log(texture);
+//        log(texture);
         testFieldsValidity();
         testSize();
         return this;
