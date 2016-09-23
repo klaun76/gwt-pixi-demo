@@ -1,6 +1,7 @@
 # Gwt-pixi-demo
 This is just demo project for [Pixi gwt](https://github.com/klaun76/gwt-pixi). Really nothing to be proud of. Main purpose of this demo is to quickly test all possible problems caused by changes and updates in [Pixi gwt](https://github.com/klaun76/gwt-pixi).
 This version has fixed settings.gradle, so folder names will match names of repositories. Previous settings caused errors in gradle build.
+Functional build is here [demo](http://mrtn.sk/demogwtpixi/)
 # How to use
 Just copy gwt-pixi-demo, [Pixi gwt](https://github.com/klaun76/gwt-pixi) and [library](https://github.com/klaun76/library) in same folder. Or fix gradle settings according to projects location. This repository was created as request from gwt google plus group member.
 # Warning
