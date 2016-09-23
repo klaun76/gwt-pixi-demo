@@ -1,13 +1,13 @@
 package sk.mrtn.demo.pixi.client.defaultdemo;
 
-import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Timer;
-import jsinterop.annotations.JsMethod;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
 import sk.mrtn.demo.pixi.client.ParticleBuilder;
+import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
@@ -24,26 +24,18 @@ import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by martinliptak on 12/09/16.
  */
+@Singleton
 public class DefaultDemo extends ADemo {
-
-
-    private static Logger LOG;
-    static {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOG = Logger.getLogger(DefaultDemo.class.getSimpleName());
-            LOG.setLevel(Level.ALL);
-        }
-    }
 
     private final ParticleBuilder particleBuilder;
     private final MultiParticleBuilder multiParticleBuilder;
@@ -56,17 +48,20 @@ public class DefaultDemo extends ADemo {
             final IStage stage,
             final ParticleBuilder particleBuilder,
             final MultiParticleBuilder multiParticleBuilder,
-            final ITicker ticker
-    ){
-        super(stage);
+            final ITicker ticker,
+            Provider<IShapeButton> buttonProvider){
+        super(stage, buttonProvider);
         this.particleBuilder = particleBuilder;
         this.multiParticleBuilder = multiParticleBuilder;
         this.ticker = ticker;
-        loadResources();
 
     }
 
-    private void loadResources() {
+    public void initialize() {
+        LOG.info("INJECTION STARTED");
+    }
+
+    protected void loadResources() {
         Loader aLoader = new Loader();
         aLoader.add("bunny",DemoPixi.RES.bunny().getSafeUri().asString());
         aLoader.add("spices3",DemoPixi.RES.spices3().getSafeUri().asString());
@@ -82,17 +77,13 @@ public class DefaultDemo extends ADemo {
         });
     }
 
-    private void buildStage() {
+    protected void buildStage() {
 
         Sprite background = createBackground();
 
         createBunnies();
 
-        this.stage.render();
-
         testFilters(background);
-
-        testHandlers();
 
         testEmitters();
 
@@ -112,11 +103,12 @@ public class DefaultDemo extends ADemo {
             }
         });
         this.ticker.start();
+        super.buildStage();
     }
 
     private Sprite createBackground() {
         Sprite background = createSprite(DemoPixi.RES.spices3().getSafeUri().asString());
-        stage.getStage().addChild(background);
+        this.mainContainer.addChild(background);
         return background;
     }
 
@@ -125,22 +117,21 @@ public class DefaultDemo extends ADemo {
         bunnySprite.name = "bunny1";
         bunnySprite.position.set(100,100);
         bunnySprite.anchor.set(0.5,0.5);
-        stage.getStage().addChild(bunnySprite);
+        this.mainContainer.addChild(bunnySprite);
 
         Sprite bunnySprite2 = createSprite(DemoPixi.RES.bunny().getSafeUri().asString());
         bunnySprite2.position.set(200,100);
         bunnySprite2.anchor.set(0.5,0.5);
         bunnySprite2.name = "bunny2";
-        stage.getStage().addChild(bunnySprite2);
+        this.mainContainer.addChild(bunnySprite2);
     }
 
     private void testParticleBuilder() {
         String emitterConfig = DemoPixi.RES.goldEmitter().getText();
         TextureAtlasResource textureAtlasResource = DemoPixi.RES.goldAnim();
         particleBuilder.initialize(emitterConfig,textureAtlasResource);
-        stage.getStage().addChild(particleBuilder.getContainer());
+        this.mainContainer.addChild(particleBuilder.getContainer());
         particleBuilder.getContainer().position.set(300,300);
-
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
@@ -159,13 +150,14 @@ public class DefaultDemo extends ADemo {
         LOG.fine("EmitterConfig test: "+config.color.start+":"+config.color.end);
         Texture texture = Texture.fromImage(DemoPixi.RES.bunny().getSafeUri().asString());
         Container particleContainer = new Container();
-        stage.getStage().addChild(particleContainer);
+        this.mainContainer.addChild(particleContainer);
         Emitter emitter = new Emitter(particleContainer, new Texture[]{texture}, config);
         particleContainer.position.set(300,300);
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
-                emitter.update(ticker.getDeltaTick() * 0.001);
+                double delta = ticker.getDeltaTick() * 0.001;
+                emitter.update(delta);
             }
 
             @Override
@@ -173,6 +165,7 @@ public class DefaultDemo extends ADemo {
                 return true;
             }
         });
+        this.ticker.start();
     }
 
     /**
@@ -216,8 +209,8 @@ public class DefaultDemo extends ADemo {
         configToArtsMap.put(emitterConfig2,arts2);
 
         multiParticleBuilder.initialize(configToArtsMap);
-        stage.getStage().addChild(multiParticleBuilder.getContainer());
-        multiParticleBuilder.getContainer().position.set(stage.getStage().getBounds().width/2, stage.getStage().getBounds().height/2);
+        this.mainContainer.addChild(multiParticleBuilder.getContainer());
+        multiParticleBuilder.getContainer().position.set(this.mainContainer.getBounds().width/2, this.mainContainer.getBounds().height/2);
 //        this.ticker.add(difference -> multiParticleBuilder.update(DefaultDemo.this.ticker.elapsedMS * 0.001));
         this.ticker.addTickable(new ITickable() {
             @Override
@@ -235,13 +228,6 @@ public class DefaultDemo extends ADemo {
     public static native void logg(Object object) /*-{
         $wnd.console.log(object);
     }-*/;
-
-    private void testHandlers() {
-        LOG.warning("interactivity logic changed, must check and rebuild test");
-//        bunnySprite.interactive = true;
-//        bunnySprite.mousedown = (eventData) -> LOG.fine("mousedown "+eventData.target.name);
-//        bunnySprite.click = (eventData) -> LOG.fine("click "+eventData.target.name);
-    }
 
     private void testFilters(Sprite sprite) {
         ColorMatrixFilter filter = new ColorMatrixFilter();
@@ -285,10 +271,6 @@ public class DefaultDemo extends ADemo {
         sprite.position.x = 0;
         sprite.position.y = 0;
         return sprite;
-    }
-
-    public void initialize() {
-        LOG.info("INJECTION STARTED");
     }
 
 }

@@ -1,6 +1,5 @@
-package sk.mrtn.demo.pixi.client.unittests.buttons;
+package sk.mrtn.demo.pixi.client.buttons;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
 import sk.mrtn.library.client.utils.Tag;
@@ -128,7 +127,6 @@ public class ShapeButton implements IShapeButton {
         }
         Text text = new Text(label,new TextStyle(textOptions));
         text.anchor.set(0.5,0.5);
-        log(text.style);
         return text;
     }
 

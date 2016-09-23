@@ -17,4 +17,10 @@ public interface IStage {
     void initialize(int width, int height);
 
     void render();
+
+    void setStage(Container stage);
+
+    int getWidth();
+
+    int getHeight();
 }

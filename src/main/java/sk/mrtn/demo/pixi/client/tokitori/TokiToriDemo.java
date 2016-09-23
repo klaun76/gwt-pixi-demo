@@ -1,41 +1,27 @@
 package sk.mrtn.demo.pixi.client.tokitori;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
-import sk.mrtn.demo.pixi.client.DemoPixi;
+import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
-import sk.mrtn.pixi.client.Sprite;
 import sk.mrtn.pixi.client.Texture;
 import sk.mrtn.pixi.client.extras.MovieClip;
 import sk.mrtn.pixi.client.loaders.Loader;
-import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
  * Created by martinliptak on 12/09/16.
  */
+@Singleton
 public class TokiToriDemo extends ADemo {
-
-
-    private static Logger LOG;
-    static {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOG = Logger.getLogger(TokiToriDemo.class.getSimpleName());
-            LOG.setLevel(Level.ALL);
-        }
-    }
 
     private static ITokiToriResources RES = ITokiToriResources.impl;
     private final ITicker ticker;
@@ -44,9 +30,9 @@ public class TokiToriDemo extends ADemo {
     @Inject
     TokiToriDemo(
             final IStage stage,
-            final ITicker ticker
-    ){
-        super(stage);
+            final ITicker ticker,
+            Provider<IShapeButton> buttonProvider){
+        super(stage, buttonProvider);
         this.ticker = ticker;
     }
 
@@ -55,7 +41,7 @@ public class TokiToriDemo extends ADemo {
         loadResources();
     }
 
-    private void loadResources() {
+    protected void loadResources() {
         Loader aLoader = new Loader();
         for (SafeUri safeUri : RES.toki().getSafeUris()) {
             aLoader.add(safeUri.asString());
@@ -87,7 +73,7 @@ public class TokiToriDemo extends ADemo {
         }
     }
 
-    private void buildStage() {
+    protected void buildStage() {
 
         List<Animation> animations = new ArrayList<>();
 
@@ -103,7 +89,7 @@ public class TokiToriDemo extends ADemo {
         for (Animation animation : animations) {
             animation.build();
             MovieClip sprite = createMovieClip(animation.textures, counter);
-            this.stage.getStage().addChild(sprite);
+            this.mainContainer.addChild(sprite);
             counter ++;
         }
 
@@ -119,7 +105,7 @@ public class TokiToriDemo extends ADemo {
             }
         });
         this.ticker.start();
-
+        super.buildStage();
     }
 
     private void updateAnimations(List<Animation> animations, String name, String frame) {

@@ -66,9 +66,37 @@ putnami {
     }
 
     compile {
+        /**
+         *  Script output style. (OBF, PRETTY, DETAILED)
+         *  Source https://github.com/Putnami/putnami-gradle-plugin
+         *  uncomment following line to get DETAILED script output style
+         *  in compiled version
+         */
+//        style = "DETAILED"
         generateJsInteropExports = true
     }
 
+}
+
+war {
+    archiveName "${project.name}.war"
+}
+
+task explodeWar(type: Copy, dependsOn: build) { task ->
+    group = "putnami"
+    String pBuildDir = task.project.buildDir
+    String pName = task.project.name
+    String pLibPath = pBuildDir + "/libs/"
+    String pWarPath = pLibPath+pName+".war"
+    description "Unpacks " + task.project.name + ".war --> " + pLibPath + "war"
+
+    doFirst {
+        println "---------------- running explodeWar ---------------- "
+    }
+    def zipFile = file(pWarPath)
+    def outputDir = file(pLibPath + "war")
+    from zipTree(zipFile)
+    into outputDir
 }
 
 def genResources = new File(project.buildDir, "generated/source/apt/main")

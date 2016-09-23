@@ -17,6 +17,8 @@ public class DefaultStage implements IStage {
     protected PIXI pixi;
     protected Renderer renderer;
     protected Container stage;
+    private int width;
+    private int height;
 
     @Inject
     DefaultStage(){
@@ -38,17 +40,41 @@ public class DefaultStage implements IStage {
     }
 
     @Override
+    public void setStage(Container stage) {
+        this.stage = stage;
+    }
+
+    @Override
     public void render() {
-        this.renderer.render(this.stage);
+        if (this.stage != null) {
+            this.renderer.render(this.stage);
+        }
     }
 
     @Override
     public void initialize(int width, int height) {
+        this.width = width;
+        this.height = height;
         this.stage = new Container();
         this.pixi = PixiEntryPoint.getPixi();
         this.renderer = this.pixi.autoDetectRenderer(width, height);
         Browser.getDocument().getBody().appendChild(renderer.view);
-        this.renderer.view.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
+        // TODO: figure out why next line of code fails when built
+//        this.renderer.view.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
     }
 
+    public static native void log(Object object) /*-{
+        $wnd.test = object;
+        $wnd.console.log(object);
+    }-*/;
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
 }

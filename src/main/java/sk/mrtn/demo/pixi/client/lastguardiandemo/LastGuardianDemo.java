@@ -2,22 +2,20 @@ package sk.mrtn.demo.pixi.client.lastguardiandemo;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
-import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.DemoPixi;
-import sk.mrtn.demo.pixi.client.IResources;
+import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.extras.MovieClip;
 import sk.mrtn.pixi.client.loaders.Loader;
-import sk.mrtn.pixi.client.ticker.Ticker;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +23,7 @@ import java.util.logging.Logger;
 /**
  * Created by martinliptak on 12/09/16.
  */
+@Singleton
 public class LastGuardianDemo extends ADemo {
 
 
@@ -43,9 +42,9 @@ public class LastGuardianDemo extends ADemo {
     LastGuardianDemo(
             final IStage stage,
             final ITicker ticker,
-            final Provider<Avatar> avatarProvider
-    ){
-        super(stage);
+            final Provider<Avatar> avatarProvider,
+            Provider<IShapeButton> buttonProvider){
+        super(stage, buttonProvider);
 
         this.ticker = ticker;
 
@@ -57,7 +56,7 @@ public class LastGuardianDemo extends ADemo {
         loadResources();
     }
 
-    private void loadResources() {
+    protected void loadResources() {
         Loader aLoader = new Loader();
         for (SafeUri safeUri : DemoPixi.RES.lastGuardianAvatars().getSafeUris()) {
             aLoader.add(safeUri.asString());
@@ -67,7 +66,8 @@ public class LastGuardianDemo extends ADemo {
         });
     }
 
-    private void buildStage() {
+    protected void buildStage() {
+
         List<Avatar> avatars = new ArrayList<>();
 
         for (String avatarFrame : DemoPixi.RES.lastGuardianAvatars().getFrames()) {
@@ -90,30 +90,28 @@ public class LastGuardianDemo extends ADemo {
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getFront(), counter);
-            this.stage.getStage().addChild(sprite);
+            this.mainContainer.addChild(sprite);
             counter++;
         }
 
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getRight(), counter);
-            this.stage.getStage().addChild(sprite);
+            this.mainContainer.addChild(sprite);
             counter++;
         }
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getLeft(), counter);
-            this.stage.getStage().addChild(sprite);
+            this.mainContainer.addChild(sprite);
             counter++;
         }
         for (Avatar avatar : avatars) {
 //            Sprite sprite = createSprite(avatar.getRight()[0], counter);
             MovieClip sprite = createMovieClip(avatar.getBack(), counter);
-            this.stage.getStage().addChild(sprite);
+            this.mainContainer.addChild(sprite);
             counter++;
         }
-
-        this.stage.render();
 
         this.ticker.addTickable(new ITickable() {
             @Override
@@ -127,6 +125,8 @@ public class LastGuardianDemo extends ADemo {
             }
         });
         this.ticker.start();
+
+        super.buildStage();
     }
 
     public static native void log(Object object) /*-{
@@ -162,7 +162,5 @@ public class LastGuardianDemo extends ADemo {
         sprite.position.y = column * delta;
         return sprite;
     }
-
-
 
 }

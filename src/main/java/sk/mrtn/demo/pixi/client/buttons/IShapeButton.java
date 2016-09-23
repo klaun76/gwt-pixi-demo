@@ -1,4 +1,4 @@
-package sk.mrtn.demo.pixi.client.unittests.buttons;
+package sk.mrtn.demo.pixi.client.buttons;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;

@@ -1,22 +1,23 @@
 package sk.mrtn.demo.pixi.client.unittests;
 
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.common.IStage;
-import sk.mrtn.demo.pixi.client.unittests.buttons.IShapeButton;
+import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.loaders.Loader;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by martinliptak on 12/09/16.
  */
+@Singleton
 public class UnitTests extends ADemo {
 
 
@@ -38,9 +39,9 @@ public class UnitTests extends ADemo {
             final IStage stage,
             final SpriteFactory spriteFactory,
             final Provider<IShapeButton> shapeButtonProvider,
-            final Provider<TextureUnitTest> textureUnitTestProvider
-    ){
-        super(stage);
+            final Provider<TextureUnitTest> textureUnitTestProvider,
+            Provider<IShapeButton> buttonProvider){
+        super(stage, buttonProvider);
         this.spriteFactory = spriteFactory;
         this.shapeButtonProvider = shapeButtonProvider;
         this.textureUnitTestProvider = textureUnitTestProvider;
@@ -52,7 +53,7 @@ public class UnitTests extends ADemo {
     }
 
 
-    private void loadResources() {
+    protected void loadResources() {
         Loader aLoader = new Loader();
         aLoader.add("test256",RES.testTextureSquare256().getSafeUri().asString());
         aLoader.add("test1024",RES.testTextureSquare1024().getSafeUri().asString());
@@ -69,10 +70,7 @@ public class UnitTests extends ADemo {
         addAlignmentTest();
         drawShapes();
         addButton();
-        this.stage.render();
-
-        Container container = new Container();
-        log(container);
+        super.buildStage();
     }
 
     private void addButton() {
@@ -81,22 +79,22 @@ public class UnitTests extends ADemo {
         Point point = new Point(512, 512);
         IShapeButton green = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.GREEN, "green\nbutton");
         green.asDisplayObject().position = point.clone();
-        this.stage.getStage().addChild(green.asDisplayObject());
+        this.mainContainer.addChild(green.asDisplayObject());
 
         IShapeButton red = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.RED, "q red");
         point.set(point.x,point.y+height*1.2);
         red.asDisplayObject().position = point.clone();
-        this.stage.getStage().addChild(red.asDisplayObject());
+        this.mainContainer.addChild(red.asDisplayObject());
 
         IShapeButton blue = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.BLUE, "blue Q");
         point.set(point.x,point.y+height*1.2);
         blue.asDisplayObject().position = point.clone();
-        this.stage.getStage().addChild(blue.asDisplayObject());
+        this.mainContainer.addChild(blue.asDisplayObject());
 
         IShapeButton violet = this.shapeButtonProvider.get().create(width, height, 10, IShapeButton.Color.VIOLET, "VIOLET");
         point.set(point.x,point.y+height*1.2);
         violet.asDisplayObject().position = point.clone();
-        this.stage.getStage().addChild(violet.asDisplayObject());
+        this.mainContainer.addChild(violet.asDisplayObject());
     }
 
     /**
@@ -131,31 +129,31 @@ public class UnitTests extends ADemo {
         graphics.drawCircle(470, 90,60);
         graphics.endFill();
 
-        this.stage.getStage().addChild(graphics);
+        this.mainContainer.addChild(graphics);
     }
 
     private void createTexturesFromImage() {
         // unit test for texture of size 1024x1024 from image
         Texture texture1024 = Texture.fromImage(RES.testTextureSquare1024().getSafeUri().asString());
         Sprite sprite1024 = this.spriteFactory.create(texture1024);
-        this.stage.getStage().addChild(sprite1024);
+        this.mainContainer.addChild(sprite1024);
         this.textureUnitTestProvider.get().initialize("1024", texture1024,1024,1024);
 
         // unit test for texture of size 1024x1024 from image
         Texture texture256 = Texture.fromImage(RES.testTextureSquare256().getSafeUri().asString());
         Sprite sprite256 = this.spriteFactory.create(texture256);
         this.textureUnitTestProvider.get().initialize("256", texture256,256,256);
-        this.stage.getStage().addChild(sprite256);
+        this.mainContainer.addChild(sprite256);
 
         Texture texture128 = Texture.fromFrame("test128x128");
         Sprite sprite128 = this.spriteFactory.create(texture128);
         this.textureUnitTestProvider.get().initialize("128",texture128,128,128);
-        this.stage.getStage().addChild(sprite128);
+        this.mainContainer.addChild(sprite128);
 
         Texture textureSmile = Texture.fromFrame("smile");
         Sprite spriteSmile = this.spriteFactory.create(textureSmile);
         this.textureUnitTestProvider.get().initialize("smile",textureSmile,128,106);
-        this.stage.getStage().addChild(spriteSmile);
+        this.mainContainer.addChild(spriteSmile);
         Point point = new Point(spriteSmile.parent.width / 2, spriteSmile.parent.height / 2);
         spriteSmile.anchor.set(0.5,0.5);
         spriteSmile.position = point;
@@ -165,26 +163,26 @@ public class UnitTests extends ADemo {
         Texture tArrowLeft = Texture.fromFrame("arrowLeft");
         Sprite sArrowLeft = this.spriteFactory.create(tArrowLeft);
         sArrowLeft.anchor.set(1,0.5);
-        sArrowLeft.position = new Point(this.stage.getStage().width , this.stage.getStage().height / 2);
-        this.stage.getStage().addChild(sArrowLeft);
+        sArrowLeft.position = new Point(this.mainContainer.width , this.mainContainer.height / 2);
+        this.mainContainer.addChild(sArrowLeft);
 
         Texture tArrowRight = Texture.fromFrame("arrowRight");
         Sprite sArrowRight = this.spriteFactory.create(tArrowRight);
         sArrowRight.anchor.set(0,0.5);
-        sArrowRight.position = new Point(0, this.stage.getStage().height / 2);
-        this.stage.getStage().addChild(sArrowRight);
+        sArrowRight.position = new Point(0, this.mainContainer.height / 2);
+        this.mainContainer.addChild(sArrowRight);
 
         Texture tArrowDown = Texture.fromFrame("arrowDown");
         Sprite sArrowDown = this.spriteFactory.create(tArrowDown);
         sArrowDown.anchor.set(0.5,1);
-        sArrowDown.position = new Point(this.stage.getStage().width / 2, this.stage.getStage().height );
-        this.stage.getStage().addChild(sArrowDown);
+        sArrowDown.position = new Point(this.mainContainer.width / 2, this.mainContainer.height );
+        this.mainContainer.addChild(sArrowDown);
 
         Texture tArrowUp = Texture.fromFrame("arrowUp");
         Sprite sArrowUp = this.spriteFactory.create(tArrowUp);
         sArrowUp.anchor.set(0.5,0);
-        sArrowUp.position = new Point(this.stage.getStage().width / 2, 0);
-        this.stage.getStage().addChild(sArrowUp);
+        sArrowUp.position = new Point(this.mainContainer.width / 2, 0);
+        this.mainContainer.addChild(sArrowUp);
 
     }
 
