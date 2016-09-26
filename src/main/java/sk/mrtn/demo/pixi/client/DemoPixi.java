@@ -1,16 +1,14 @@
 package sk.mrtn.demo.pixi.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
-import elemental.client.Browser;
-import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
 import sk.mrtn.demo.pixi.client.tokitori.TokiToriDemo;
 import sk.mrtn.demo.pixi.client.unittests.UnitTests;
+import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.library.client.utils.IUrlParametersManager;
-import sk.mrtn.library.client.utils.stats.Stats;
+import sk.mrtn.library.client.utils.stats.StatsLoader;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,8 +37,8 @@ public class DemoPixi {
     private final Provider<UnitTests> unitTestsProvider;
     private final Provider<TokiToriDemo> tokiToriDemoProvider;
     private final IStage stage;
-    private final Stats stats;
     private final Menu menu;
+    private final ITicker ticker;
 
     enum Type {
         PARTICLES("particles"),
@@ -68,8 +66,8 @@ public class DemoPixi {
 
     @Inject
     DemoPixi(
+            final ITicker ticker,
             final IStage stage,
-            final Stats stats,
             final IUrlParametersManager urlParametersManager,
             final Menu menu,
             final Provider<DefaultDemo> defaultDemoProvider,
@@ -77,8 +75,8 @@ public class DemoPixi {
             final Provider<UnitTests> unitTestsProvider,
             final Provider<TokiToriDemo> tokiToriDemoProvider
     ){
+        this.ticker = ticker;
         this.stage = stage;
-        this.stats = stats;
         this.urlParametersManager = urlParametersManager;
         this.menu = menu;
         this.defaultDemoProvider = defaultDemoProvider;
@@ -91,9 +89,7 @@ public class DemoPixi {
         LOG.info("INJECTION STARTED");
         this.stage.initialize(1024,1024);
         RES.main().ensureInjected();
-        if (urlParametersManager.getParameter("dstats") == "true") {
-            Browser.getDocument().getBody().appendChild(stats.getDom());
-        }
+        StatsLoader.Statics.initialize(this.ticker,this.urlParametersManager);
         this.menu.initialize(() -> onMenuInitialized());
     }
 
