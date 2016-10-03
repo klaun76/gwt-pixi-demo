@@ -1,16 +1,19 @@
 package sk.mrtn.demo.pixi.client.tokitori;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
+import sk.mrtn.library.client.ticker.ITickableRegistration;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Texture;
 import sk.mrtn.pixi.client.extras.MovieClip;
 import sk.mrtn.pixi.client.loaders.Loader;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -25,14 +28,16 @@ public class TokiToriDemo extends ADemo {
 
     private static ITokiToriResources RES = ITokiToriResources.impl;
     private final ITicker ticker;
+    private ITickableRegistration tickableRegistration;
 
 
     @Inject
     TokiToriDemo(
+            final @Named("Common") EventBus eventBus,
             final IStage stage,
             final ITicker ticker,
             Provider<IShapeButton> buttonProvider){
-        super(stage, buttonProvider);
+        super(eventBus, stage, buttonProvider);
         this.ticker = ticker;
     }
 
@@ -93,7 +98,7 @@ public class TokiToriDemo extends ADemo {
             counter ++;
         }
 
-        this.ticker.addTickable(new ITickable() {
+        this.tickableRegistration = this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
                 stage.render();
@@ -101,11 +106,18 @@ public class TokiToriDemo extends ADemo {
 
             @Override
             public boolean shouldTick() {
-                return true;
+                return pageActive;
             }
         });
         this.ticker.start();
         super.buildStage();
+    }
+
+    @Override
+    protected void doOpen() {
+        super.doOpen();
+        this.ticker.start();
+        this.ticker.requestTick();
     }
 
     private void updateAnimations(List<Animation> animations, String name, String frame) {

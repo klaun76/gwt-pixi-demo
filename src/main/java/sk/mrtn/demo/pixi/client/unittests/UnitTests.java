@@ -1,5 +1,6 @@
 package sk.mrtn.demo.pixi.client.unittests;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
@@ -9,6 +10,7 @@ import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.loaders.Loader;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.logging.Level;
@@ -36,12 +38,13 @@ public class UnitTests extends ADemo {
 
     @Inject
     UnitTests(
+            final @Named("Common") EventBus eventBus,
             final IStage stage,
             final SpriteFactory spriteFactory,
             final Provider<IShapeButton> shapeButtonProvider,
             final Provider<TextureUnitTest> textureUnitTestProvider,
             Provider<IShapeButton> buttonProvider){
-        super(stage, buttonProvider);
+        super(eventBus, stage, buttonProvider);
         this.spriteFactory = spriteFactory;
         this.shapeButtonProvider = shapeButtonProvider;
         this.textureUnitTestProvider = textureUnitTestProvider;

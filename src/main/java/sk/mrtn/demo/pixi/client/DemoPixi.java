@@ -1,13 +1,16 @@
 package sk.mrtn.demo.pixi.client;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import elemental.client.Browser;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
 import sk.mrtn.demo.pixi.client.tokitori.TokiToriDemo;
 import sk.mrtn.demo.pixi.client.unittests.UnitTests;
 import sk.mrtn.library.client.ticker.ITicker;
+import sk.mrtn.library.client.ui.mainpanel.IRootResponsivePanel;
 import sk.mrtn.library.client.utils.IUrlParametersManager;
+import sk.mrtn.library.client.utils.orientationchange.IWindowStateChangeHandler;
 import sk.mrtn.library.client.utils.stats.StatsLoader;
 
 import javax.inject.Inject;
@@ -38,6 +41,8 @@ public class DemoPixi {
     private final Provider<TokiToriDemo> tokiToriDemoProvider;
     private final IStage stage;
     private final Menu menu;
+    private final IWindowStateChangeHandler windowStateChangeHandler;
+    private final IRootResponsivePanel mainResponsivePanel;
     private final ITicker ticker;
 
     enum Type {
@@ -66,6 +71,8 @@ public class DemoPixi {
 
     @Inject
     DemoPixi(
+            final IWindowStateChangeHandler windowStateChangeHandler,
+            final IRootResponsivePanel mainResponsivePanel,
             final ITicker ticker,
             final IStage stage,
             final IUrlParametersManager urlParametersManager,
@@ -75,6 +82,8 @@ public class DemoPixi {
             final Provider<UnitTests> unitTestsProvider,
             final Provider<TokiToriDemo> tokiToriDemoProvider
     ){
+        this.windowStateChangeHandler = windowStateChangeHandler;
+        this.mainResponsivePanel = mainResponsivePanel;
         this.ticker = ticker;
         this.stage = stage;
         this.urlParametersManager = urlParametersManager;
@@ -87,10 +96,14 @@ public class DemoPixi {
 
     public void initialize() {
         LOG.info("INJECTION STARTED");
+        this.windowStateChangeHandler.registerWindowResizeHanlder();
+        Browser.getDocument().getBody().appendChild(this.mainResponsivePanel.asNode());
         this.stage.initialize(1024,1024);
         RES.main().ensureInjected();
         StatsLoader.Statics.initialize(this.ticker,this.urlParametersManager);
-        this.menu.initialize(() -> onMenuInitialized());
+        this.menu.initialize(() -> {
+            onMenuInitialized();
+        });
     }
 
     private void onMenuInitialized() {

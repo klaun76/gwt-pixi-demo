@@ -1,12 +1,17 @@
 package sk.mrtn.demo.pixi.client;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.logging.client.LogConfiguration;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
+import sk.mrtn.demo.pixi.client.common.IResponsiveController;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
+import sk.mrtn.library.client.utils.orientationchange.events.IOnWindowResizedEventHandler;
+import sk.mrtn.library.client.utils.orientationchange.events.OnWindowResizedEvent;
 import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.PIXI;
 
+import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,8 +19,9 @@ import java.util.logging.Logger;
 /**
  * Created by martinliptak on 16/09/16.
  */
-public abstract class ADemo {
+public abstract class ADemo implements IResponsiveController {
 
+    protected boolean pageActive;
     protected static Logger LOG;
     static {
         if (LogConfiguration.loggingIsEnabled()) {
@@ -43,6 +49,7 @@ public abstract class ADemo {
     private IShapeButton button;
 
     protected ADemo(
+            final @Named("Common") EventBus eventBus,
             final IStage stage,
             Provider<IShapeButton> buttonProvider
     ){
@@ -52,11 +59,28 @@ public abstract class ADemo {
         button = this.buttonProvider.get().create(
                 50,50,20, IShapeButton.Color.RED,"X"
         );
+        onResized(this.stage.getWidth(),this.stage.getHeight());
+    }
+
+    @Override
+    public void onResized(double width, double height) {
+        LOG.warning("onResized - this method should be overriden");
         button.asDisplayObject().position.set(
-                this.stage.getWidth() - button.asDisplayObject().getBounds().width,
+                width - button.asDisplayObject().getBounds().width,
                 0
         );
     }
+
+    @Override
+    public Container getContainer() {
+        return this.mainContainer;
+    }
+
+    @Override
+    public void onDetached() {
+        this.pageActive = false;
+    }
+
     public static native void log(Object object) /*-{
         $wnd.console.log(object);
     }-*/;
@@ -81,7 +105,9 @@ public abstract class ADemo {
     }
 
     protected void doOpen() {
-        this.stage.setStage(this.mainContainer);
+        this.pageActive = true;
+        onResized(this.stage.getWidth(),this.stage.getHeight());
+        this.stage.setResponsiveStage(this);
         this.stage.render();
         if (this.onOpenedListener != null) {
             this.onOpenedListener.onOpened();

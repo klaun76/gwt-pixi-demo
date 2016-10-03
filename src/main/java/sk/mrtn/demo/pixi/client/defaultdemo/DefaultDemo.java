@@ -1,6 +1,6 @@
 package sk.mrtn.demo.pixi.client.defaultdemo;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Timer;
 import sk.mrtn.demo.pixi.client.ADemo;
@@ -24,6 +24,7 @@ import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -45,12 +46,13 @@ public class DefaultDemo extends ADemo {
 
     @Inject
     DefaultDemo(
+            final @Named("Common") EventBus eventBus,
             final IStage stage,
             final ParticleBuilder particleBuilder,
             final MultiParticleBuilder multiParticleBuilder,
             final ITicker ticker,
             Provider<IShapeButton> buttonProvider){
-        super(stage, buttonProvider);
+        super(eventBus, stage, buttonProvider);
         this.particleBuilder = particleBuilder;
         this.multiParticleBuilder = multiParticleBuilder;
         this.ticker = ticker;
@@ -106,6 +108,13 @@ public class DefaultDemo extends ADemo {
         super.buildStage();
     }
 
+    @Override
+    protected void doOpen() {
+        super.doOpen();
+        this.ticker.start();
+        this.ticker.requestTick();
+    }
+
     private Sprite createBackground() {
         Sprite background = createSprite(DemoPixi.RES.spices3().getSafeUri().asString());
         this.mainContainer.addChild(background);
@@ -140,7 +149,7 @@ public class DefaultDemo extends ADemo {
 
             @Override
             public boolean shouldTick() {
-                return true;
+                return pageActive;
             }
         });
     }
@@ -162,7 +171,7 @@ public class DefaultDemo extends ADemo {
 
             @Override
             public boolean shouldTick() {
-                return true;
+                return pageActive;
             }
         });
         this.ticker.start();
@@ -211,7 +220,7 @@ public class DefaultDemo extends ADemo {
         multiParticleBuilder.initialize(configToArtsMap);
         this.mainContainer.addChild(multiParticleBuilder.getContainer());
         multiParticleBuilder.getContainer().position.set(this.mainContainer.getBounds().width/2, this.mainContainer.getBounds().height/2);
-//        this.ticker.add(difference -> multiParticleBuilder.update(DefaultDemo.this.ticker.elapsedMS * 0.001));
+//        this.ticker.add(difference -> multiParticleBuilder.onResized(DefaultDemo.this.ticker.elapsedMS * 0.001));
         this.ticker.addTickable(new ITickable() {
             @Override
             public void update(ITicker ticker) {
@@ -220,7 +229,7 @@ public class DefaultDemo extends ADemo {
 
             @Override
             public boolean shouldTick() {
-                return true;
+                return pageActive;
             }
         });
     }
