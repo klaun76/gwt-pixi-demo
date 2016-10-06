@@ -1,23 +1,29 @@
 package sk.mrtn.demo.pixi.client;
 
-import com.google.gwt.aria.client.SearchRole;
 import com.google.gwt.logging.client.LogConfiguration;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
+import sk.mrtn.demo.pixi.client.common.IResponsiveController;
 import sk.mrtn.demo.pixi.client.common.IStage;
-import sk.mrtn.pixi.client.*;
+import sk.mrtn.pixi.client.Container;
+import sk.mrtn.pixi.client.DisplayObject;
+import sk.mrtn.pixi.client.Point;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by martinliptak on 12/09/16.
+ * TODO: skraslit usporaduvanie buttonov
  */
 @Singleton
-public class Menu {
+public class Menu implements IResponsiveController {
 
+    private List<IShapeButton> shapeButtons;
     private double buttonWidth;
     private double buttonHeight;
     private Point startingPoint;
@@ -48,14 +54,30 @@ public class Menu {
         this.stage = stage;
         this.shapeButtonProvider = shapeButtonProvider;
         this.mainContainer = new Container();
+        this.shapeButtons = new ArrayList<>();
+    }
+
+    @Override
+    public void onResized(double width, double height) {
+        updateButtons(width,height);
+    }
+
+    @Override
+    public Container getContainer() {
+        return this.mainContainer;
+    }
+
+    @Override
+    public void onDetached() {
+        LOG.fine("onDetached");
     }
 
     public void initialize(IOnInitializedListener onInitializedListener) {
         this.onInitializedListener = onInitializedListener;
         this.buttonWidth = 256;
         this.buttonHeight = 64;
-        double x = this.stage.getWidth() / 2 - this.buttonWidth/2;
-        double y = this.stage.getHeight()/2 - (this.buttonHeight*3);
+        double x = this.stage.getWidth() / 2 - this.buttonWidth / 2;
+        double y = this.stage.getHeight() / 2 - (this.buttonHeight * 3);
         this.startingPoint = new Point(x, y);
 
         loadResources();
@@ -73,22 +95,45 @@ public class Menu {
     }
 
     protected void buildStage() {
-        this.onInitializedListener.onInitialized();
+        if (this.onInitializedListener != null) {
+            this.onInitializedListener.onInitialized();
+        } else {
+            LOG.severe("onInitializedListener not set");
+        }
     }
 
     protected void show() {
-        this.stage.setStage(this.mainContainer);
+        onResized(this.stage.getWidth(),this.stage.getHeight());
+        this.stage.setResponsiveStage(this);
         this.stage.render();
     }
 
     public void addButton(String name, IButtonCommand callback) {
         LOG.info("addButton: "+name+", "+startingPoint.toString());
+
         IShapeButton button = this.shapeButtonProvider.get().create(buttonWidth, buttonHeight, 10, IShapeButton.Color.GREEN, name);
+        this.shapeButtons.add(button);
+
         button.asDisplayObject().position = startingPoint.clone();
-        startingPoint.set(startingPoint.x , startingPoint.y+ buttonHeight *1.2);
+        startingPoint.set(startingPoint.x , startingPoint.y+ buttonHeight * 1.2);
         this.mainContainer.addChild(button.asDisplayObject());
+
         button.addClickHandler(button1 -> callback.run());
+
         this.stage.render();
 
     }
+
+    private void updateButtons(double width, double height) {
+        double y = height / 2 - (this.buttonHeight * (this.shapeButtons.size()/2));
+        double yDelta = 0;
+        for (IShapeButton shapeButton : this.shapeButtons) {
+            DisplayObject button = shapeButton.asDisplayObject();
+            double x = width / 2 - button.getBounds().width / 2;
+            button.position.set(x,y + yDelta);
+            yDelta += buttonHeight * 1.2;
+        }
+
+    }
+
 }

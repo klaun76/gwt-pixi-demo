@@ -1,7 +1,7 @@
 package sk.mrtn.demo.pixi.client.common;
 
-import elemental.client.Browser;
-import elemental.css.CSSStyleDeclaration;
+import elemental.dom.Node;
+import sk.mrtn.library.client.ui.mainpanel.IRootResponsivePanel;
 import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.PIXI;
 import sk.mrtn.pixi.client.PixiEntryPoint;
@@ -14,14 +14,35 @@ import javax.inject.Inject;
  */
 public class DefaultStage implements IStage {
 
+    private final IRootResponsivePanel mainResponsivePanel;
     protected PIXI pixi;
     protected Renderer renderer;
     protected Container stage;
     private int width;
     private int height;
+    private IResponsiveController responsiveStage;
 
     @Inject
-    DefaultStage(){
+    DefaultStage(
+            final IRootResponsivePanel mainResponsivePanel
+    ){
+        this.mainResponsivePanel = mainResponsivePanel;
+    }
+
+    @Override
+    public void onResized(double width, double height) {
+        this.width = (int) width;
+        this.height = (int) height;
+        this.renderer.resize(width,height);
+        if (this.responsiveStage != null) {
+            this.responsiveStage.onResized(width, height);
+        }
+        this.render();
+    }
+
+    @Override
+    public Node asNode() {
+        return this.renderer.view;
     }
 
     @Override
@@ -41,7 +62,22 @@ public class DefaultStage implements IStage {
 
     @Override
     public void setStage(Container stage) {
+        onDetached();
+        this.responsiveStage = null;
         this.stage = stage;
+    }
+
+    private void onDetached() {
+        if (this.responsiveStage != null) {
+            this.responsiveStage.onDetached();
+        }
+    }
+
+    @Override
+    public void setResponsiveStage(IResponsiveController responsiveStage) {
+        onDetached();
+        this.responsiveStage = responsiveStage;
+        this.stage = responsiveStage.getContainer();
     }
 
     @Override
@@ -58,7 +94,7 @@ public class DefaultStage implements IStage {
         this.stage = new Container();
         this.pixi = PixiEntryPoint.getPixi();
         this.renderer = this.pixi.autoDetectRenderer(width, height);
-        Browser.getDocument().getBody().appendChild(renderer.view);
+        this.mainResponsivePanel.insert(this);
         // TODO: figure out why next line of code fails when built
 //        this.renderer.view.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
     }

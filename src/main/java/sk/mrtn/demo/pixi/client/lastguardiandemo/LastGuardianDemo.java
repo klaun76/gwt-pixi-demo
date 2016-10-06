@@ -1,5 +1,6 @@
 package sk.mrtn.demo.pixi.client.lastguardiandemo;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
@@ -13,6 +14,7 @@ import sk.mrtn.pixi.client.extras.MovieClip;
 import sk.mrtn.pixi.client.loaders.Loader;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -40,11 +42,12 @@ public class LastGuardianDemo extends ADemo {
 
     @Inject
     LastGuardianDemo(
+            final @Named("Common") EventBus eventBus,
             final IStage stage,
             final ITicker ticker,
             final Provider<Avatar> avatarProvider,
             Provider<IShapeButton> buttonProvider){
-        super(stage, buttonProvider);
+        super(eventBus, stage, buttonProvider);
 
         this.ticker = ticker;
 
@@ -121,12 +124,19 @@ public class LastGuardianDemo extends ADemo {
 
             @Override
             public boolean shouldTick() {
-                return true;
+                return pageActive;
             }
         });
         this.ticker.start();
 
         super.buildStage();
+    }
+
+    @Override
+    protected void doOpen() {
+        super.doOpen();
+        this.ticker.start();
+        this.ticker.requestTick();
     }
 
     public static native void log(Object object) /*-{
