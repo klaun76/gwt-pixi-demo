@@ -1,6 +1,9 @@
 package sk.mrtn.demo.pixi.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
+import sk.mrtn.demo.pixi.client.buttondemo.ButtonDemo;
+import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
@@ -36,6 +39,7 @@ public class DemoPixi {
     private final Provider<LastGuardianDemo> lastGuardianDemoProvider;
     private final Provider<UnitTests> unitTestsProvider;
     private final Provider<TokiToriDemo> tokiToriDemoProvider;
+    private final Provider<ButtonDemo> buttonDemoProvider;
     private final IStage stage;
     private final Menu menu;
     private final ITicker ticker;
@@ -45,7 +49,8 @@ public class DemoPixi {
         TOKI_TORI("tokitori"),
         LAST_GUARDIAN("lastguardian"),
         UNIT_TESTS("unittests"),
-        DEFAULT("default");
+        DEFAULT("default"),
+        BUTTONS("buttons");
 
         private final String name;
 
@@ -73,7 +78,8 @@ public class DemoPixi {
             final Provider<DefaultDemo> defaultDemoProvider,
             final Provider<LastGuardianDemo> lastGuardianDemoProvider,
             final Provider<UnitTests> unitTestsProvider,
-            final Provider<TokiToriDemo> tokiToriDemoProvider
+            final Provider<TokiToriDemo> tokiToriDemoProvider,
+            final Provider<ButtonDemo> buttonDemoProvider
     ){
         this.ticker = ticker;
         this.stage = stage;
@@ -83,6 +89,7 @@ public class DemoPixi {
         this.lastGuardianDemoProvider = lastGuardianDemoProvider;
         this.unitTestsProvider = unitTestsProvider;
         this.tokiToriDemoProvider = tokiToriDemoProvider;
+        this.buttonDemoProvider = buttonDemoProvider;
     }
 
     public void initialize() {
@@ -98,6 +105,7 @@ public class DemoPixi {
         menu.addButton(Type.TOKI_TORI.name(),DemoPixi.this::startTokiTori);
         menu.addButton(Type.LAST_GUARDIAN.name(),DemoPixi.this::startLastGuardian);
         menu.addButton(Type.UNIT_TESTS.name(),DemoPixi.this::startUnitTests);
+        menu.addButton(Type.BUTTONS.name(),DemoPixi.this::startButtonDemo);
 
         Type type = Type.parse(urlParametersManager.getParameter("autorun"));
         switch (type) {
@@ -113,9 +121,19 @@ public class DemoPixi {
             case UNIT_TESTS:
                 startUnitTests();
                 break;
+            case BUTTONS:
+                startButtonDemo();
+                break;
             case DEFAULT:
                 menu.show();
         }
+    }
+
+    private void startButtonDemo() {
+        if (!this.buttonDemoProvider.get().isInitialized()) {
+            buttonDemoProvider.get().getButton().addClickHandler(button -> menu.show());
+        }
+        buttonDemoProvider.get().open(null);
     }
 
     private void startLastGuardian() {
