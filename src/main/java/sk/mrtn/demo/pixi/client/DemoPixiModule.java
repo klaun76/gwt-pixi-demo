@@ -2,13 +2,15 @@ package sk.mrtn.demo.pixi.client;
 
 import dagger.Module;
 import dagger.Provides;
-import sk.mrtn.demo.pixi.client.common.DefaultStage;
-import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.demo.pixi.client.buttons.ShapeButton;
+import sk.mrtn.demo.pixi.client.common.DefaultStage;
+import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.library.client.UtilsModule;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.library.client.ticker.Ticker;
+import sk.mrtn.library.client.ui.mainpanel.IRootResponsivePanel;
+import sk.mrtn.library.client.ui.mainpanel.RootResponsivePanel;
 
 import javax.inject.Singleton;
 
@@ -35,6 +37,12 @@ public class DemoPixiModule {
     @Singleton
     IStage providesIstage(final DefaultStage stage){
         return stage;
+    }
+
+    @Provides
+    @Singleton
+    IRootResponsivePanel provideIMainResponsivePanel(RootResponsivePanel panel){
+        return panel;
     }
 
 }

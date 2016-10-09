@@ -10,16 +10,20 @@ import sk.mrtn.pixi.client.Renderer;
  */
 public interface IStage extends IResponsivePanel {
 
+    @Deprecated
     PIXI getPixi();
 
+    @Deprecated
     Renderer getRenderer();
 
+    @Deprecated
     Container getStage();
 
     void initialize(int width, int height);
 
     void render();
 
+    @Deprecated
     void setStage(Container stage);
 
     void setResponsiveStage(IResponsiveController responsiveStage);
