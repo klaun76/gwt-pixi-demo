@@ -2,8 +2,8 @@ package sk.mrtn.demo.pixi.client;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
-import sk.mrtn.demo.pixi.client.common.IResponsiveController;
-import sk.mrtn.demo.pixi.client.common.IStage;
+import sk.mrtn.pixi.client.stage.IResponsiveController;
+import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.Point;

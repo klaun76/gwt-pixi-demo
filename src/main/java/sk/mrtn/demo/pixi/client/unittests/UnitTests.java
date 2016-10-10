@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
-import sk.mrtn.demo.pixi.client.common.IStage;
+import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.loaders.Loader;

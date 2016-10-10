@@ -4,11 +4,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
 import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
-import sk.mrtn.demo.pixi.client.common.IStage;
 import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.interaction.EventListener;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
