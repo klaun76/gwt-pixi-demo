@@ -104,6 +104,7 @@ public class DemoPixi {
         this.windowStateChangeHandler.registerWindowResizeHanlder();
         Browser.getDocument().getBody().appendChild(this.mainResponsivePanel.asNode());
         this.stage.initialize(1024,1024);
+        this.mainResponsivePanel.insert(this.stage);
         RES.main().ensureInjected();
         StatsLoader.Statics.initialize(this.ticker,this.urlParametersManager);
         this.menu.initialize(() -> {

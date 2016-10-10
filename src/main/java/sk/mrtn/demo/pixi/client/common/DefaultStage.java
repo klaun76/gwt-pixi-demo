@@ -14,7 +14,6 @@ import javax.inject.Inject;
  */
 public class DefaultStage implements IStage {
 
-    private final IRootResponsivePanel mainResponsivePanel;
     protected PIXI pixi;
     protected Renderer renderer;
     protected Container stage;
@@ -23,11 +22,7 @@ public class DefaultStage implements IStage {
     private IResponsiveController responsiveStage;
 
     @Inject
-    DefaultStage(
-            final IRootResponsivePanel mainResponsivePanel
-    ){
-        this.mainResponsivePanel = mainResponsivePanel;
-    }
+    DefaultStage(){}
 
     @Override
     public void onResized(double width, double height) {
@@ -43,28 +38,6 @@ public class DefaultStage implements IStage {
     @Override
     public Node asNode() {
         return this.renderer.view;
-    }
-
-    @Override
-    public PIXI getPixi() {
-        return pixi;
-    }
-
-    @Override
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-    @Override
-    public Container getStage() {
-        return stage;
-    }
-
-    @Override
-    public void setStage(Container stage) {
-        onDetached();
-        this.responsiveStage = null;
-        this.stage = stage;
     }
 
     private void onDetached() {
@@ -94,7 +67,6 @@ public class DefaultStage implements IStage {
         this.stage = new Container();
         this.pixi = PixiEntryPoint.getPixi();
         this.renderer = this.pixi.autoDetectRenderer(width, height);
-        this.mainResponsivePanel.insert(this);
         // TODO: figure out why next line of code fails when built
 //        this.renderer.view.getStyle().setPosition(CSSStyleDeclaration.Position.ABSOLUTE);
     }
