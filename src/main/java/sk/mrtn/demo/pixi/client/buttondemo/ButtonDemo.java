@@ -5,13 +5,13 @@ import com.google.gwt.event.shared.EventBus;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.button.IButton;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
-import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Graphics;
 import sk.mrtn.pixi.client.Text;
 import sk.mrtn.pixi.client.TextOptions;
 import sk.mrtn.pixi.client.TextStyle;
+import sk.mrtn.pixi.client.stage.IStage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
