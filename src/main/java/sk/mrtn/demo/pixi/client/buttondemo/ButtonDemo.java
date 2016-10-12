@@ -1,6 +1,7 @@
 package sk.mrtn.demo.pixi.client.buttondemo;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.button.IButton;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
@@ -14,6 +15,7 @@ import sk.mrtn.pixi.client.TextOptions;
 import sk.mrtn.pixi.client.TextStyle;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -29,12 +31,13 @@ public class ButtonDemo extends ADemo {
 
     @Inject
     protected ButtonDemo(
+            final @Named("Common") EventBus eventBus,
             IStage stage,
             Provider<IShapeButton> shapeButtonProvider,
             Provider<IButton> buttonProvider,
             final ITicker ticker
             ) {
-        super(stage, shapeButtonProvider);
+        super(eventBus,stage, shapeButtonProvider);
         this.buttonProvider = buttonProvider;
         this.ticker = ticker;
     }
