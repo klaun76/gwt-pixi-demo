@@ -8,7 +8,7 @@ import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
 import sk.mrtn.demo.pixi.client.ParticleBuilder;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
-import sk.mrtn.demo.pixi.client.common.IStage;
+import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Container;

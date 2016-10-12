@@ -1,14 +1,16 @@
 package sk.mrtn.demo.pixi.client;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import elemental.dom.Node;
 import sk.mrtn.demo.pixi.client.buttondemo.ButtonDemo;
 import elemental.client.Browser;
-import sk.mrtn.demo.pixi.client.common.IStage;
+import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
 import sk.mrtn.demo.pixi.client.lastguardiandemo.LastGuardianDemo;
 import sk.mrtn.demo.pixi.client.tokitori.TokiToriDemo;
 import sk.mrtn.demo.pixi.client.unittests.UnitTests;
 import sk.mrtn.library.client.ticker.ITicker;
+import sk.mrtn.library.client.ui.mainpanel.IResponsivePanel;
 import sk.mrtn.library.client.ui.mainpanel.IRootResponsivePanel;
 import sk.mrtn.library.client.utils.IUrlParametersManager;
 import sk.mrtn.library.client.utils.orientationchange.IWindowStateChangeHandler;
@@ -104,6 +106,17 @@ public class DemoPixi {
         this.windowStateChangeHandler.registerWindowResizeHanlder();
         Browser.getDocument().getBody().appendChild(this.mainResponsivePanel.asNode());
         this.stage.initialize(1024,1024);
+        this.mainResponsivePanel.insert(new IResponsivePanel() {
+            @Override
+            public void onResized(double width, double height) {
+                stage.onResized(width,height);
+            }
+
+            @Override
+            public Node asNode() {
+                return stage.asNode();
+            }
+        });
         RES.main().ensureInjected();
         StatsLoader.Statics.initialize(this.ticker,this.urlParametersManager);
         this.menu.initialize(() -> {

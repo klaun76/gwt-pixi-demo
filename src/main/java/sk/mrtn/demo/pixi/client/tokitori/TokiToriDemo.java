@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeUri;
 import sk.mrtn.demo.pixi.client.ADemo;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
-import sk.mrtn.demo.pixi.client.common.IStage;
+import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITickableRegistration;
 import sk.mrtn.library.client.ticker.ITicker;
