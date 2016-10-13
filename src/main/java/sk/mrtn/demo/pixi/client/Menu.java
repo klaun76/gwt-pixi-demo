@@ -135,5 +135,9 @@ public class Menu implements IResponsiveController {
         }
 
     }
+    @Override
+    public void addResponsiveController(IResponsiveController responsiveController) {
+        throw new UnsupportedOperationException();
+    }
 
 }

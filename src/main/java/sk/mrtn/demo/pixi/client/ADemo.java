@@ -111,4 +111,9 @@ public abstract class ADemo implements IResponsiveController {
             this.onOpenedListener.onOpened();
         }
     }
+
+    @Override
+    public void addResponsiveController(IResponsiveController responsiveController) {
+        throw new UnsupportedOperationException();
+    }
 }
