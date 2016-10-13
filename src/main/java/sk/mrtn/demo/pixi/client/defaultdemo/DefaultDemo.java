@@ -8,7 +8,6 @@ import sk.mrtn.demo.pixi.client.DemoPixi;
 import sk.mrtn.demo.pixi.client.MultiParticleBuilder;
 import sk.mrtn.demo.pixi.client.ParticleBuilder;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
-import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.library.client.ticker.ITickable;
 import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.Container;
@@ -22,6 +21,7 @@ import sk.mrtn.pixi.client.particles.Emitter;
 import sk.mrtn.pixi.client.particles.RepetitiveTexture;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
+import sk.mrtn.pixi.client.stage.IStage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
