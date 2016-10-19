@@ -20,6 +20,7 @@ public abstract class AButton implements IButton{
     private DisplayObject displayObject;
     protected DisplayObject normalStateTexture;
     private Text text;
+    protected boolean isBeingDragged;
 
     public IButton create(DisplayObject normalStateDisplayObject) {
 
@@ -62,6 +63,21 @@ public abstract class AButton implements IButton{
             this.container.interactive = false;
             this.container.buttonMode = false;
         }
+    }
+
+    protected void onMouseOrTouchDown(){
+        if (clickedStateTexture != null){
+            container.removeChild(normalStateTexture);
+            container.addChildAt(clickedStateTexture,0);
+        }
+        this.isBeingDragged = true;
+    }
+
+    protected void onMouseOrTouchUp(){
+
+        container.removeChild(clickedStateTexture);
+        container.addChildAt(normalStateTexture,0);
+        this.isBeingDragged = false;
     }
 
     @Override

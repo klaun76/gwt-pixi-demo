@@ -38,10 +38,13 @@ public class ButtonTouch extends AButton implements IButton {
 
     private void onTouchEnd() {
         GWT.log("@touchEnd");
+        onMouseOrTouchUp();
+        onTouchEventHandlersList.forEach(IOnEventHandler::onClick);
     }
 
     private void onTouchStart() {
         GWT.log("@touchStart");
+        onMouseOrTouchDown();
     }
 
     @Override
