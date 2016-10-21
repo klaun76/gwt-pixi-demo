@@ -10,13 +10,6 @@ import sk.mrtn.pixi.client.Text;
  */
 public interface IButton {
 
-    IButton create(DisplayObject normalStateDisplayObject);
-    IButton setClickedStateTexture(DisplayObject displayObject);
-    IButton setHoverStateTexture(DisplayObject displayObject);
-    IButton setInactiveStateTexture(DisplayObject displayObject);
-    IButton setText(Text text);
-
-
     void setEnabled(boolean enabled);
     IButton setDraggable(boolean draggable);
 

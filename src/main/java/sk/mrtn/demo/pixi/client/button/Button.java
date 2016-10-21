@@ -17,11 +17,9 @@ public class Button extends AButton implements IButton {
 
     private List<IOnEventHandler> onClickEventHandlersList;
 
-    @Override
-    public IButton create(DisplayObject normalStateDisplayObject) {
-
+    protected Button(ButtonBuilder builder) {
+        super(builder);
         this.onClickEventHandlersList = new ArrayList<>();
-        return super.create(normalStateDisplayObject);
     }
 
     @Override

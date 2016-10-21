@@ -3,6 +3,7 @@ package sk.mrtn.demo.pixi.client.buttondemo;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import sk.mrtn.demo.pixi.client.ADemo;
+import sk.mrtn.demo.pixi.client.button.ButtonBuilder;
 import sk.mrtn.demo.pixi.client.button.IButton;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
 import sk.mrtn.library.client.ticker.ITickable;
@@ -24,7 +25,7 @@ import javax.inject.Singleton;
 @Singleton
 public class ButtonDemo extends ADemo {
 
-    private final Provider<IButton> buttonProvider;
+    private final Provider<ButtonBuilder> buttonBuilderProvider;
     private final ITicker ticker;
     private IButton button;
 
@@ -33,11 +34,11 @@ public class ButtonDemo extends ADemo {
             final @Named("Common") EventBus eventBus,
             IStage stage,
             Provider<IShapeButton> shapeButtonProvider,
-            Provider<IButton> buttonProvider,
+            Provider<ButtonBuilder> buttonBuilderProvider,
             final ITicker ticker
             ) {
         super(eventBus,stage, shapeButtonProvider);
-        this.buttonProvider = buttonProvider;
+        this.buttonBuilderProvider = buttonBuilderProvider;
         this.ticker = ticker;
     }
 
@@ -62,16 +63,19 @@ public class ButtonDemo extends ADemo {
     }
 
     private void addButtonTest() {
-        Text hovno = new Text("HOVNO");
-        TextOptions textOptions = new TextOptions();
-        hovno.style = new TextStyle(textOptions);
-        this.button = buttonProvider.get()
-                .create(createTestBackground(IShapeButton.Color.BLUE))
-                .setText(hovno)
-                .setDraggable(true)
-                .setClickedStateTexture(createTestBackground(IShapeButton.Color.RED))
-                ;
 
+        Text test = new Text("TEST");
+        TextOptions textOptions = new TextOptions();
+        test.style = new TextStyle(textOptions);
+
+        this.button = buttonBuilderProvider.get()
+                .setNormalStateDisplayObject(createTestBackground(IShapeButton.Color.BLUE))
+                .setClickedStateDisplayObject(createTestBackground(IShapeButton.Color.RED))
+                .setNormalStateText(test)
+                .build()
+        ;
+
+        this.button.setDraggable(true);
         button.addClickHandler(this::onButtonClick);
         button.addTouchHandler(this::onButtonClick);
         this.mainContainer.addChild(button.asDisplayObject());
