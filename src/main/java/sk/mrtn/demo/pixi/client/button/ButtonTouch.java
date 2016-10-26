@@ -18,11 +18,9 @@ public class ButtonTouch extends AButton implements IButton {
 
     private List<IOnEventHandler> onTouchEventHandlersList;
 
-    @Override
-    public IButton create(DisplayObject normalStateDisplayObject) {
-
+    protected ButtonTouch(ButtonBuilder builder) {
+        super(builder);
         this.onTouchEventHandlersList = new ArrayList<>();
-        return super.create(normalStateDisplayObject);
     }
 
     @Override
@@ -38,10 +36,13 @@ public class ButtonTouch extends AButton implements IButton {
 
     private void onTouchEnd() {
         GWT.log("@touchEnd");
+        onMouseOrTouchUp();
+        onTouchEventHandlersList.forEach(IOnEventHandler::onClick);
     }
 
     private void onTouchStart() {
         GWT.log("@touchStart");
+        onMouseOrTouchDown();
     }
 
     @Override

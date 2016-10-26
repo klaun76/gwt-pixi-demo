@@ -14,27 +14,40 @@ public abstract class AButton implements IButton{
     protected Container container;
     protected boolean enabled;
     protected boolean draggable;
-    protected DisplayObject clickedStateTexture;
-    private DisplayObject hoverStateTexture;
-    private DisplayObject inactiveStateTexture;
     private DisplayObject displayObject;
-    protected DisplayObject normalStateTexture;
-    private Text text;
+    protected boolean isBeingDragged;
 
-    public IButton create(DisplayObject normalStateDisplayObject) {
+    protected DisplayObject normalStateDisplayObject;
+    protected DisplayObject clickedStateDisplayObject;
+    private DisplayObject hoverStateDisplayObject;
+    private DisplayObject disabledStateDisplayObject;
+
+    private Text normalStateText;
+    private final Text disabledStateText;
+    private final Text hoveredStateText;
+    private final Text clickedStateText;
+
+    protected AButton (ButtonBuilder builder){
 
         this.container = new Container();
         this.container.buttonMode = true;
         this.container.interactive = true;
-        this.normalStateTexture = normalStateDisplayObject;
-        this.displayObject = normalStateDisplayObject;
 
+        this.normalStateDisplayObject = builder.normalStateDisplayObject;
+        this.hoverStateDisplayObject = builder.hoverStateDisplayObject;
+        this.clickedStateDisplayObject = builder.clickedStateDisplayObject;
+        this.disabledStateDisplayObject = builder.disabledStateDisplayObject;
+
+        this.normalStateText = builder.normalStateText;
+        this.hoveredStateText = builder.hoveredStateText;
+        this.clickedStateText = builder.clickedStateText;
+        this.disabledStateText = builder.disabledStateText;
+
+        this.displayObject = normalStateDisplayObject;
         this.container.addChild(displayObject);
 
         addInteraction();
         this.enabled = true;
-
-        return this;
     }
 
     protected abstract void addInteraction();
@@ -42,10 +55,10 @@ public abstract class AButton implements IButton{
     @Override
     public DisplayObject asDisplayObject() {
 
-        if (this.text != null){
-            text.position.set(container.width/2,container.height/2);
-            text.anchor.set(0.5,0.5);
-            this.container.addChild(text);
+        if (this.normalStateText != null){
+            normalStateText.position.set(container.width/2,container.height/2);
+            normalStateText.anchor.set(0.5,0.5);
+            this.container.addChild(normalStateText);
         }
 
         return this.container;
@@ -64,34 +77,24 @@ public abstract class AButton implements IButton{
         }
     }
 
+    protected void onMouseOrTouchDown(){
+        if (clickedStateDisplayObject != null){
+            container.removeChild(normalStateDisplayObject);
+            container.addChildAt(clickedStateDisplayObject,0);
+        }
+        this.isBeingDragged = true;
+    }
+
+    protected void onMouseOrTouchUp(){
+
+        container.removeChild(clickedStateDisplayObject);
+        container.addChildAt(normalStateDisplayObject,0);
+        this.isBeingDragged = false;
+    }
+
     @Override
     public IButton setDraggable(boolean draggable) {
         this.draggable = draggable;
-        return this;
-    }
-
-    @Override
-    public IButton setText(Text text) {
-        this.text = text;
-        return this;
-    }
-
-
-    @Override
-    public IButton setClickedStateTexture(DisplayObject displayObject) {
-        this.clickedStateTexture = displayObject;
-        return this;
-    }
-
-    @Override
-    public IButton setHoverStateTexture(DisplayObject displayObject) {
-        this.hoverStateTexture = displayObject;
-        return this;
-    }
-
-    @Override
-    public IButton setInactiveStateTexture(DisplayObject displayObject) {
-        this.inactiveStateTexture = displayObject;
         return this;
     }
 

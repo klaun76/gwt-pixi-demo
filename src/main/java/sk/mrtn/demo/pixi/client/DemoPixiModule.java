@@ -3,6 +3,7 @@ package sk.mrtn.demo.pixi.client;
 import dagger.Module;
 import dagger.Provides;
 import sk.mrtn.demo.pixi.client.button.Button;
+import sk.mrtn.demo.pixi.client.button.ButtonBuilder;
 import sk.mrtn.demo.pixi.client.button.ButtonTouch;
 import sk.mrtn.demo.pixi.client.button.IButton;
 import sk.mrtn.demo.pixi.client.buttons.IShapeButton;
@@ -35,16 +36,6 @@ public class DemoPixiModule {
     @Provides
     IShapeButton providesIShapeButton(ShapeButton shapeButton) {
         return shapeButton;
-    }
-
-    @Provides
-    IButton providesIButton(MobileDetect mobileDetect) {
-
-        if (mobileDetect.mobile() == null) {
-            return new Button();
-        } else {
-            return new ButtonTouch();
-        }
     }
 
     @Provides

@@ -16,13 +16,10 @@ import java.util.List;
 public class Button extends AButton implements IButton {
 
     private List<IOnEventHandler> onClickEventHandlersList;
-    private boolean dragging;
 
-    @Override
-    public IButton create(DisplayObject normalStateDisplayObject) {
-
+    protected Button(ButtonBuilder builder) {
+        super(builder);
         this.onClickEventHandlersList = new ArrayList<>();
-        return super.create(normalStateDisplayObject);
     }
 
     @Override
@@ -41,7 +38,7 @@ public class Button extends AButton implements IButton {
     }
 
     private void onMouseMove() {
-        if (draggable && dragging){
+        if (draggable && isBeingDragged){
 //            container.position.set(++container.position.x,++container.position.y);
             GWT.log("@btn move  " + container.position.x);
         }
@@ -55,23 +52,15 @@ public class Button extends AButton implements IButton {
     private void onMouseUp() {
         if (enabled){
             GWT.log("@mouse up");
-            container.removeChild(clickedStateTexture);
-            container.addChildAt(normalStateTexture,0);
-//            this.displayObject = normalStateTexture;
+            onMouseOrTouchUp();
             onClickEventHandlersList.forEach(IOnEventHandler::onClick);
         }
-        this.dragging = false;
     }
 
     private void onMouseDown() {
         if (enabled){
             GWT.log("@mouse down");
-            if (clickedStateTexture != null){
-                container.removeChild(normalStateTexture);
-                container.addChildAt(clickedStateTexture,0);
-//                this.displayObject = clickedStateTexture;
-            }
-            this.dragging = true;
+            onMouseOrTouchDown();
         }
     }
 
