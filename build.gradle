@@ -17,9 +17,9 @@ version '1.0-SNAPSHOT'
 ext {
 
     daggerVersion  = "2.7"
-    gwtVersion     = "2.8.0-rc3"
+    gwtVersion     = "2.8.0"
     guavaVersion   = "19.0"
-    putnamiVersion = "0.3.0"
+    putnamiVersion = "0.4.0"
     autofactoryVersion = '1.0-beta3'
     hammerVersion  = "1.0.0"
 
