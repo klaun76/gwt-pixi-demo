@@ -1,8 +1,6 @@
 package sk.mrtn.demo.pixi.client.button;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
-import sk.mrtn.library.client.utils.mobiledetect.MobileDetect;
+import sk.mrtn.library.client.device.DeviceType;
 import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.Text;
 
@@ -13,7 +11,6 @@ import javax.inject.Inject;
  */
 public class ButtonBuilder {
 
-    private final MobileDetect mobileDetect;
 
     protected DisplayObject normalStateDisplayObject;
     protected DisplayObject hoverStateDisplayObject;
@@ -27,13 +24,11 @@ public class ButtonBuilder {
 
     @Inject
     public ButtonBuilder(
-            MobileDetect mobileDetect
             ){
-        this.mobileDetect = mobileDetect;
     }
 
     public IButton build(){
-        if (mobileDetect.mobile() == null) {
+        if (DeviceType.isDesktop()) {
             return new Button(this);
         } else {
             return new ButtonTouch(this);

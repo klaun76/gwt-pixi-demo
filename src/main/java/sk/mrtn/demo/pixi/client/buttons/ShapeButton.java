@@ -2,8 +2,8 @@ package sk.mrtn.demo.pixi.client.buttons;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
+import sk.mrtn.library.client.device.DeviceType;
 import sk.mrtn.library.client.utils.Tag;
-import sk.mrtn.library.client.utils.mobiledetect.MobileDetect;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.interaction.EventListener;
 
@@ -18,15 +18,12 @@ import java.util.List;
 public class ShapeButton implements IShapeButton {
 
     List<IOnClickEventHandler> onClickEventHandlerList;
-    private final MobileDetect mobileDetect;
     private Container container;
     private Graphics background;
 
     @Inject
     protected ShapeButton(
-            final MobileDetect mobileDetect
     ){
-        this.mobileDetect = mobileDetect;
         this.onClickEventHandlerList = new ArrayList<>();
     }
 
@@ -68,7 +65,7 @@ public class ShapeButton implements IShapeButton {
     }
 
     private void addInteraction() {
-        if (this.mobileDetect.mobile() == null) {
+        if (DeviceType.isDesktop()) {
             this.container.on(Event.MOUSEDOWN, (EventListener) event -> onInteracted());
         } else {
             this.container.on(Event.TOUCHSTART, (EventListener) event -> onInteracted());
