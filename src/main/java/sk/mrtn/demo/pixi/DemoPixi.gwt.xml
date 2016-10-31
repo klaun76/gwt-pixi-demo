@@ -10,4 +10,7 @@
     <source path="client" />
     <entry-point class="sk.mrtn.demo.pixi.client.DemoPixiEntryPoint"></entry-point>
 
+    <set-configuration-property name="CssResource.enableGss" value="true" />
+    <set-configuration-property name="CssResource.conversionMode"    value="strict" />
+    
 </module>
