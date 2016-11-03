@@ -1,8 +1,13 @@
 package sk.mrtn.demo.pixi.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.logging.client.LogConfiguration;
 import dagger.Component;
+import elemental.client.Browser;
+import sk.mrtn.library.client.utils.Spinner;
+import sk.mrtn.pixi.client.PixiLoader;
 
 import javax.inject.Singleton;
 import java.util.logging.Logger;
@@ -30,8 +35,28 @@ public class DemoPixiEntryPoint implements EntryPoint {
             LOG = Logger.getLogger("common");
             LOG.info("onModuleLoad --> entrypoint initiated!");
         }
-        IDemoPixiComponent root = DaggerDemoPixiEntryPoint_IDemoPixiComponent
-                .create();
-        root.get().initialize();
+        Spinner spinner = new Spinner();
+        Browser.getDocument().getBody().appendChild(spinner.asNode());
+        spinner.setColor("#fff");
+        spinner.onLoad();
+        GWT.runAsync(new RunAsyncCallback() {
+
+            @Override
+            public void onFailure(Throwable reason) {
+                LOG.severe("could not load");
+            }
+
+            @Override
+            public void onSuccess() {
+                LOG.severe("onSuccess");
+                PixiLoader.Statics.ensureInjected();
+                IDemoPixiComponent root = DaggerDemoPixiEntryPoint_IDemoPixiComponent
+                        .create();
+                root.get().initialize();
+                spinner.onUnload();
+            }
+
+        });
+
     }
 }
