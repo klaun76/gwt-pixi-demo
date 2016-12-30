@@ -116,4 +116,10 @@ public abstract class ADemo implements IResponsiveController {
     public void addResponsiveController(IResponsiveController responsiveController) {
         throw new UnsupportedOperationException();
     }
+
+
+    @Override
+    public void removeResponsiveController(IResponsiveController responsiveController) {
+        throw new UnsupportedOperationException();
+    }
 }
