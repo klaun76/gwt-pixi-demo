@@ -6,6 +6,8 @@ import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.Text;
 
+import java.util.Map;
+
 /**
  * Created by Patrik on 5. 10. 2016.
  */
@@ -46,26 +48,32 @@ public abstract class AButton implements IButton{
         this.displayObject = normalStateDisplayObject;
         this.container.addChild(displayObject);
 
-        addInteraction();
-        this.enabled = true;
-    }
-
-    protected abstract void addInteraction();
-
-    @Override
-    public DisplayObject asDisplayObject() {
-
         if (this.normalStateText != null){
             normalStateText.position.set(container.width/2,container.height/2);
             normalStateText.anchor.set(0.5,0.5);
             this.container.addChild(normalStateText);
         }
 
+        addClickInteraction(builder.onClickEventHandlersMap);
+        addTouchInteraction(builder.onTouchEventHandlersMap);
+        this.enabled = true;
+    }
+
+    protected void addClickInteraction(Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap) {
+
+    }
+
+    protected void addTouchInteraction(Map<IOnEventHandler,HandlerRegistration> onTouchEventHandlersMap) {
+
+    }
+
+    @Override
+    public DisplayObject asDisplayObject() {
         return this.container;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public IButton setEnabled(boolean enabled) {
         if (enabled){
             this.enabled = true;
             this.container.interactive = true;
@@ -75,6 +83,8 @@ public abstract class AButton implements IButton{
             this.container.interactive = false;
             this.container.buttonMode = false;
         }
+
+        return this;
     }
 
     protected void onMouseOrTouchDown(){
@@ -96,15 +106,5 @@ public abstract class AButton implements IButton{
     public IButton setDraggable(boolean draggable) {
         this.draggable = draggable;
         return this;
-    }
-
-    @Override
-    public HandlerRegistration addClickHandler(IOnEventHandler handler) {
-        return null;
-    }
-
-    @Override
-    public HandlerRegistration addTouchHandler(IOnEventHandler handler) {
-        return null;
     }
 }

@@ -4,26 +4,28 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
 import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
-import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.interaction.EventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Patrik on 28. 9. 2016.
  */
 public class Button extends AButton implements IButton {
 
-    private List<IOnEventHandler> onClickEventHandlersList;
+    private Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap;
 
     protected Button(ButtonBuilder builder) {
         super(builder);
-        this.onClickEventHandlersList = new ArrayList<>();
+        if (this.onClickEventHandlersMap == null){
+            this.onClickEventHandlersMap = new HashMap<>();
+        }
     }
 
     @Override
-    protected void addInteraction() {
+    protected void addClickInteraction(Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap) {
+        this.onClickEventHandlersMap = onClickEventHandlersMap;
         this.container.on(Event.MOUSEDOWN, (EventListener) event -> onMouseDown());
         this.container.on(Event.MOUSEUP, (EventListener) event -> onMouseUp());
         this.container.on(Event.MOUSEOVER, (EventListener) event -> onMouseOver());
@@ -31,6 +33,10 @@ public class Button extends AButton implements IButton {
         this.container.on(Event.MOUSEMOVE, (EventListener) event -> onMouseMove());
     }
 
+    @Override
+    public void removeHandler(IOnEventHandler handler) {
+        this.onClickEventHandlersMap.remove(handler);
+    }
 
     private void onMouseOut() {
         GWT.log("@hover end");
@@ -53,7 +59,7 @@ public class Button extends AButton implements IButton {
         if (enabled){
             GWT.log("@mouse up");
             onMouseOrTouchUp();
-            onClickEventHandlersList.forEach(IOnEventHandler::onClick);
+            onClickEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
         }
     }
 
@@ -62,12 +68,5 @@ public class Button extends AButton implements IButton {
             GWT.log("@mouse down");
             onMouseOrTouchDown();
         }
-    }
-
-    @Override
-    public HandlerRegistration addClickHandler(IOnEventHandler handler) {
-        onClickEventHandlersList.add(handler);
-        HandlerRegistration handlerRegistration = () -> onClickEventHandlersList.remove(handler);
-        return handlerRegistration;
     }
 }

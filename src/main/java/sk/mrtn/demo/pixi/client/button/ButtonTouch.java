@@ -4,11 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import elemental.events.Event;
 import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
-import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.interaction.EventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Patrik on 4. 10. 2016.
@@ -16,18 +15,27 @@ import java.util.List;
 public class ButtonTouch extends AButton implements IButton {
 
 
-    private List<IOnEventHandler> onTouchEventHandlersList;
+    private Map<IOnEventHandler,HandlerRegistration> onTouchEventHandlersMap;
 
     protected ButtonTouch(ButtonBuilder builder) {
         super(builder);
-        this.onTouchEventHandlersList = new ArrayList<>();
+        if (this.onTouchEventHandlersMap == null){
+            this.onTouchEventHandlersMap = new HashMap<>();
+        }
     }
 
     @Override
-    protected void addInteraction() {
+    protected void addTouchInteraction(Map<IOnEventHandler,HandlerRegistration> onTouchEventHandlersMap) {
+        this.onTouchEventHandlersMap = onTouchEventHandlersMap;
+
         this.container.on(Event.TOUCHSTART, (EventListener) event -> onTouchStart());
         this.container.on(Event.TOUCHEND, (EventListener) event -> onTouchEnd());
         this.container.on(Event.TOUCHMOVE, (EventListener) event -> onTouchMove());
+    }
+
+    @Override
+    public void removeHandler(IOnEventHandler handler) {
+        this.onTouchEventHandlersMap.remove(handler);
     }
 
     private void onTouchMove() {
@@ -37,18 +45,11 @@ public class ButtonTouch extends AButton implements IButton {
     private void onTouchEnd() {
         GWT.log("@touchEnd");
         onMouseOrTouchUp();
-        onTouchEventHandlersList.forEach(IOnEventHandler::onClick);
+        onTouchEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
     }
 
     private void onTouchStart() {
         GWT.log("@touchStart");
         onMouseOrTouchDown();
-    }
-
-    @Override
-    public HandlerRegistration addTouchHandler(IOnEventHandler handler) {
-        onTouchEventHandlersList.add(handler);
-        HandlerRegistration handlerRegistration = () -> onTouchEventHandlersList.remove(handler);
-        return handlerRegistration;
     }
 }

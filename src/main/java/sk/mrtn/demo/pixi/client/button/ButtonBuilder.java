@@ -1,10 +1,14 @@
 package sk.mrtn.demo.pixi.client.button;
 
+import com.google.gwt.event.shared.HandlerRegistration;
+import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
 import sk.mrtn.library.client.device.DeviceType;
 import sk.mrtn.pixi.client.DisplayObject;
 import sk.mrtn.pixi.client.Text;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Patrik on 21. 10. 2016.
@@ -22,9 +26,18 @@ public class ButtonBuilder {
     protected Text clickedStateText;
     protected Text disabledStateText;
 
+    /**
+     * these Maps keep pairs of IOnEventHandlers and their registrations.
+     * Registrations can be used to remove these handlers, if needed.
+     */
+    protected Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap;
+    protected Map<IOnEventHandler,HandlerRegistration> onTouchEventHandlersMap;
+
     @Inject
     public ButtonBuilder(
             ){
+        this.onClickEventHandlersMap = new HashMap<>();
+        this.onTouchEventHandlersMap = new HashMap<>();
     }
 
     public IButton build(){
@@ -75,13 +88,15 @@ public class ButtonBuilder {
         return this;
     }
 
-//    public ButtonBuilder addClickHandler(IOnEventHandler handler){
-//
-//        return this;
-//    }
-//
-//    public ButtonBuilder addTouchHandler(IOnEventHandler handler){
-//
-//        return this;
-//    }
+    public ButtonBuilder addClickHandler(final IOnEventHandler handler){
+        HandlerRegistration handlerRegistration = () -> onClickEventHandlersMap.remove(handler);
+        this.onClickEventHandlersMap.put(handler,handlerRegistration);
+        return this;
+    }
+
+    public ButtonBuilder addTouchHandler(final IOnEventHandler handler){
+        HandlerRegistration handlerRegistration = () -> onTouchEventHandlersMap.remove(handler);
+        this.onTouchEventHandlersMap.put(handler,handlerRegistration);
+        return this;
+    }
 }

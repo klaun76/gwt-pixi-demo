@@ -72,12 +72,12 @@ public class ButtonDemo extends ADemo {
                 .setNormalStateDisplayObject(createTestBackground(IShapeButton.Color.BLUE))
                 .setClickedStateDisplayObject(createTestBackground(IShapeButton.Color.RED))
                 .setNormalStateText(test)
+                .addClickHandler(this::onButtonClick)
+                .addTouchHandler(this::onButtonClick)
                 .build()
         ;
 
         this.button.setDraggable(true);
-        button.addClickHandler(this::onButtonClick);
-        button.addTouchHandler(this::onButtonClick);
         this.mainContainer.addChild(button.asDisplayObject());
     }
 
