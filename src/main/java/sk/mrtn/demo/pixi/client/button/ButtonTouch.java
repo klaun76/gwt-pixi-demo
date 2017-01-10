@@ -29,8 +29,9 @@ public class ButtonTouch extends AButton implements IButton {
         this.onTouchEventHandlersMap = onTouchEventHandlersMap;
 
         this.container.on(Event.TOUCHSTART, (EventListener) event -> onTouchStart());
-        this.container.on(Event.TOUCHEND, (EventListener) event -> onTouchEnd());
+        this.container.on(Event.TOUCHEND, (EventListener) event -> onMouseOrTouchUp());
         this.container.on(Event.TOUCHMOVE, (EventListener) event -> onTouchMove());
+        this.container.on(Event.TOUCHCANCEL, (EventListener) event -> onTouchCancel());
     }
 
     @Override
@@ -42,14 +43,22 @@ public class ButtonTouch extends AButton implements IButton {
         GWT.log("@touchMove");
     }
 
-    private void onTouchEnd() {
-        GWT.log("@touchEnd");
-        onMouseOrTouchUp();
-        onTouchEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
+    @Override
+    protected void onMouseOrTouchUp() {
+        if (enabled) {
+            GWT.log("@touchEnd");
+            requestRedrawBackground(normalStateDisplayObject);
+            super.onMouseOrTouchUp();
+            onTouchEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
+        }
     }
 
     private void onTouchStart() {
         GWT.log("@touchStart");
         onMouseOrTouchDown();
+    }
+
+    private void onTouchCancel() {
+        GWT.log("@touchCancel");
     }
 }

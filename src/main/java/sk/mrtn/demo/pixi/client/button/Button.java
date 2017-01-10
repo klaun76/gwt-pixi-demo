@@ -27,20 +27,27 @@ public class Button extends AButton implements IButton {
     protected void addClickInteraction(Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap) {
         this.onClickEventHandlersMap = onClickEventHandlersMap;
         this.container.on(Event.MOUSEDOWN, (EventListener) event -> onMouseDown());
-        this.container.on(Event.MOUSEUP, (EventListener) event -> onMouseUp());
+        this.container.on(Event.MOUSEUP, (EventListener) event -> onMouseOrTouchUp());
         this.container.on(Event.MOUSEOVER, (EventListener) event -> onMouseOver());
         this.container.on(Event.MOUSEOUT, (EventListener) event -> onMouseOut());
         this.container.on(Event.MOUSEMOVE, (EventListener) event -> onMouseMove());
     }
 
-    @Override
-    public void removeHandler(IOnEventHandler handler) {
-        this.onClickEventHandlersMap.remove(handler);
+    private void onMouseDown() {
+        if (enabled){
+            GWT.log("@mouse down");
+            onMouseOrTouchDown();
+        }
     }
 
-    private void onMouseOut() {
-        GWT.log("@hover end");
-
+    @Override
+    protected void onMouseOrTouchUp() {
+        if (enabled) {
+            GWT.log("@mouse up");
+            requestRedrawBackground(hoverStateDisplayObject);
+            super.onMouseOrTouchUp();
+            onClickEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
+        }
     }
 
     private void onMouseMove() {
@@ -52,21 +59,19 @@ public class Button extends AButton implements IButton {
 
     private void onMouseOver() {
 
-        GWT.log("@hover");
+        requestRedrawBackground(hoverStateDisplayObject);
+        GWT.log("@mouse over");
     }
 
-    private void onMouseUp() {
-        if (enabled){
-            GWT.log("@mouse up");
-            onMouseOrTouchUp();
-            onClickEventHandlersMap.keySet().forEach(IOnEventHandler::onClick);
-        }
+    private void onMouseOut() {
+
+        requestRedrawBackground(normalStateDisplayObject);
+        GWT.log("@mouse out");
+
     }
 
-    private void onMouseDown() {
-        if (enabled){
-            GWT.log("@mouse down");
-            onMouseOrTouchDown();
-        }
+    @Override
+    public void removeHandler(IOnEventHandler handler) {
+        this.onClickEventHandlersMap.remove(handler);
     }
 }

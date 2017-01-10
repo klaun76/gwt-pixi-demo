@@ -26,6 +26,7 @@ public interface IShapeButton  {
         RED(new int[]{0x650000,0xCE0000}),
         GREEN(new int[]{0x006504,0x00CE0E}),
         BLUE(new int[]{0x002A64,0X0082CD}),
+        DARK_BLUE(new int[]{0x002A64,0x002A64}),
         VIOLET(new int[]{0x65005D,0xAD00CE});
 
         private final int[] orientation;

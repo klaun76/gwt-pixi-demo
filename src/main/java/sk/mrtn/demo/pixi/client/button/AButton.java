@@ -1,6 +1,8 @@
 package sk.mrtn.demo.pixi.client.button;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import sk.mrtn.demo.pixi.client.button.handlers.IOnEventHandler;
 import sk.mrtn.pixi.client.Container;
 import sk.mrtn.pixi.client.DisplayObject;
@@ -13,16 +15,19 @@ import java.util.Map;
  */
 public abstract class AButton implements IButton{
 
+    private static final int LONG_CLICK_TIMEOUT = 1500;
+
+    private final Timer longClickTimer;
     protected Container container;
     protected boolean enabled;
     protected boolean draggable;
-    private DisplayObject displayObject;
+    private DisplayObject currentDisplayObject;
     protected boolean isBeingDragged;
 
     protected DisplayObject normalStateDisplayObject;
     protected DisplayObject clickedStateDisplayObject;
-    private DisplayObject hoverStateDisplayObject;
-    private DisplayObject disabledStateDisplayObject;
+    protected DisplayObject hoverStateDisplayObject;
+    protected DisplayObject disabledStateDisplayObject;
 
     private Text normalStateText;
     private final Text disabledStateText;
@@ -45,8 +50,7 @@ public abstract class AButton implements IButton{
         this.clickedStateText = builder.clickedStateText;
         this.disabledStateText = builder.disabledStateText;
 
-        this.displayObject = normalStateDisplayObject;
-        this.container.addChild(displayObject);
+        requestRedrawBackground(normalStateDisplayObject);
 
         if (this.normalStateText != null){
             normalStateText.position.set(container.width/2,container.height/2);
@@ -54,9 +58,24 @@ public abstract class AButton implements IButton{
             this.container.addChild(normalStateText);
         }
 
+        this.longClickTimer = new Timer() {
+            @Override
+            public void run() {
+                onLongCLickOrTouch();
+            }
+        };
+
         addClickInteraction(builder.onClickEventHandlersMap);
         addTouchInteraction(builder.onTouchEventHandlersMap);
         this.enabled = true;
+    }
+
+    protected void requestRedrawBackground(DisplayObject newBackground) {
+        if (newBackground != null){
+            container.removeChild(currentDisplayObject);
+            this.currentDisplayObject = newBackground;
+            container.addChildAt(currentDisplayObject,0);
+        }
     }
 
     protected void addClickInteraction(Map<IOnEventHandler,HandlerRegistration> onClickEventHandlersMap) {
@@ -88,18 +107,19 @@ public abstract class AButton implements IButton{
     }
 
     protected void onMouseOrTouchDown(){
-        if (clickedStateDisplayObject != null){
-            container.removeChild(normalStateDisplayObject);
-            container.addChildAt(clickedStateDisplayObject,0);
-        }
+        requestRedrawBackground(clickedStateDisplayObject);
+        this.longClickTimer.schedule(LONG_CLICK_TIMEOUT);
         this.isBeingDragged = true;
     }
 
     protected void onMouseOrTouchUp(){
-
-        container.removeChild(clickedStateDisplayObject);
-        container.addChildAt(normalStateDisplayObject,0);
+        this.longClickTimer.cancel();
         this.isBeingDragged = false;
+    }
+
+    protected void onLongCLickOrTouch(){
+        GWT.log("@long click");
+        onMouseOrTouchUp();
     }
 
     @Override

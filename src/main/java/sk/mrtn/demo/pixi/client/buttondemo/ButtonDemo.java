@@ -71,6 +71,7 @@ public class ButtonDemo extends ADemo {
         this.button = buttonBuilderProvider.get()
                 .setNormalStateDisplayObject(createTestBackground(IShapeButton.Color.BLUE))
                 .setClickedStateDisplayObject(createTestBackground(IShapeButton.Color.RED))
+                .setHoverStateDisplayObject(createTestBackground(IShapeButton.Color.DARK_BLUE))
                 .setNormalStateText(test)
                 .addClickHandler(this::onButtonClick)
                 .addTouchHandler(this::onButtonClick)
