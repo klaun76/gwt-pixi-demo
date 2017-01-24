@@ -62,7 +62,6 @@ public abstract class ADemo implements IResponsiveController {
 
     @Override
     public void onResized(double width, double height) {
-        LOG.warning("onResized - this method should be overriden");
         button.asDisplayObject().position.set(
                 width - button.asDisplayObject().getBounds().width,
                 0
