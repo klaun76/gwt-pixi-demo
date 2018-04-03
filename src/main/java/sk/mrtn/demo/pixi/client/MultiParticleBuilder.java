@@ -91,7 +91,9 @@ public class MultiParticleBuilder {
     }-*/;
 
     private Emitter buildEmitter(Container container, EmitterConfig config, AnimatedParticleArtTextureNames[] art, ParticleType animatedParticle) {
-        Emitter emitter = this.emitterFactory.create(container, art, config);
+        // fixme: find out why usage of autofactory fails here.
+//        Emitter emitter = this.emitterFactory.create(container, art, config);
+        Emitter emitter = new Emitter(container, art, config);
         switch (animatedParticle) {
             case PARTICLE:
                 break;
