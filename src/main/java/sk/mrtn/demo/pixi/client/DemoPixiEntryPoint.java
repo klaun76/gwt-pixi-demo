@@ -7,7 +7,10 @@ import com.google.gwt.logging.client.LogConfiguration;
 import dagger.Component;
 import elemental.client.Browser;
 import sk.mrtn.library.client.utils.Spinner;
+import sk.mrtn.pixi.client.PIXI;
 import sk.mrtn.pixi.client.PixiLoader;
+import sk.mrtn.pixi.client.parsers.InterfaceReader;
+import sk.mrtn.pixi.client.spine.SpineCrossVersionFix;
 
 import javax.inject.Singleton;
 import java.util.logging.Logger;
@@ -50,6 +53,7 @@ public class DemoPixiEntryPoint implements EntryPoint {
             public void onSuccess() {
                 LOG.severe("onSuccess");
                 PixiLoader.Statics.ensureInjected();
+                SpineCrossVersionFix.fix();
                 IDemoPixiComponent root = DaggerDemoPixiEntryPoint_IDemoPixiComponent
                         .create();
                 root.get().initialize();
