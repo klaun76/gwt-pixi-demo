@@ -14,13 +14,12 @@ import sk.mrtn.library.client.ticker.ITicker;
 import sk.mrtn.pixi.client.*;
 import sk.mrtn.pixi.client.filters.ColorMatrixFilter;
 import sk.mrtn.pixi.client.loaders.Loader;
-import sk.mrtn.pixi.client.parsers.InterfaceReader;
 import sk.mrtn.pixi.client.particles.AnimatedParticleArtTextureNames;
 import sk.mrtn.pixi.client.particles.Emitter;
 import sk.mrtn.pixi.client.particles.RepetitiveTexture;
 import sk.mrtn.pixi.client.particles.config.EmitterConfig;
 import sk.mrtn.pixi.client.resources.textureatlas.TextureAtlasResource;
-import sk.mrtn.pixi.client.spine.TextureAtlas;
+import sk.mrtn.pixi.client.spine.*;
 import sk.mrtn.pixi.client.stage.IStage;
 
 import javax.inject.Inject;
@@ -73,39 +72,13 @@ public class DefaultDemo extends ADemo {
         for (SafeUri safeUri : DemoPixi.RES.bubblesAndCoinAnims().getSafeUris()) {
             aLoader.add(safeUri.asString());
         }
+        for (SafeUri safeUri : DemoPixi.RES.soccerBall().getUrisOfAtlasImages()) {
+            aLoader.add(safeUri.asString());
+        }
         aLoader.load((loader, resources) -> {
 //            log(loader,resources);
             buildStage();
         });
-
-        Loader spineLoader = new Loader();
-        for (SafeUri safeUri : DemoPixi.RES.soccerBall().getUrisOfAtlasImages()) {
-            spineLoader.add(safeUri.asString());
-        }
-
-
-        spineLoader.load((loader, resources) -> {
-            spineTest();
-        });
-
-
-    }
-
-    @JsMethod(namespace="Math")
-    private static native double max(double x, double y);
-
-    private void spineTest() {
-        TextureAtlas textureAtlas = DemoPixi.RES.soccerBall().getTextureAtlas();
-
-        LOG.severe("NAME " + DemoPixi.RES.soccerBall().getName());
-
-        Map<String, SafeUri> mapa = DemoPixi.RES.soccerBall().getImagesMap();
-        mapa.forEach((key, value) -> LOG.severe("KEY " + key + " VALUE " + value));
-//
-//        InterfaceReader.parseObjectAndOutputToConsole("PIXI.spine.core.BoneData");
-////        PIXI pixi = new PIXI(elementById);
-////        Spine spine = new Spine(elementById);
-//        InterfaceReader.parseObjectAndOutputToConsole(pixi, "PIXI");
     }
 
     protected void buildStage() {
@@ -113,6 +86,8 @@ public class DefaultDemo extends ADemo {
         Sprite background = createBackground();
 
         createBunnies();
+
+        createSpineBall();
 
         testFilters(background);
 
@@ -162,6 +137,13 @@ public class DefaultDemo extends ADemo {
         bunnySprite2.anchor.set(0.5,0.5);
         bunnySprite2.name = "bunny2";
         this.mainContainer.addChild(bunnySprite2);
+    }
+
+    private void createSpineBall() {
+        Spine spine = new Spine(DemoPixi.RES.soccerBall().getSkeletonData());
+        spine.position.set(550, 450);
+        spine.state.setAnimation(0, "animation",true);
+        this.mainContainer.addChild(spine);
     }
 
     private void testParticleBuilder() {
@@ -310,5 +292,22 @@ public class DefaultDemo extends ADemo {
         sprite.position.y = 0;
         return sprite;
     }
+
+    //region Spine testing
+    @JsMethod(namespace="Math")
+    private static native double max(double x, double y);
+
+    private void spineTest() {
+        SkeletonData skeletonData = DemoPixi.RES.soccerBall().getSkeletonData();
+//        Skin[] boneData = skeletonData.animations[0]
+//        log(boneData[0].name);
+//        InterfaceReader.parseObjectAndOutputToConsole(boneData, "PIXI");
+
+//        InterfaceReader.parseObjectAndOutputToConsole("PIXI.spine.core.Bone");
+////        PIXI pixi = new PIXI(elementById);
+////        Spine spine = new Spine(elementById);
+//        InterfaceReader.parseObjectAndOutputToConsole(pixi, "PIXI");
+    }
+    //endregion
 
 }
