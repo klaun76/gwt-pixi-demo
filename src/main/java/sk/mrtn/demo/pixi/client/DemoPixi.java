@@ -4,6 +4,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import elemental.dom.Node;
 import sk.mrtn.demo.pixi.client.buttondemo.ButtonDemo;
 import elemental.client.Browser;
+import sk.mrtn.demo.pixi.client.tween.TweenDemo;
 import sk.mrtn.library.client.promises.PromisesTestSuite;
 import sk.mrtn.pixi.client.stage.IStage;
 import sk.mrtn.demo.pixi.client.defaultdemo.DefaultDemo;
@@ -45,6 +46,7 @@ public class DemoPixi {
     private final Provider<TokiToriDemo> tokiToriDemoProvider;
     private final Provider<ButtonDemo> buttonDemoProvider;
     private final Provider<PromisesTestSuite> promisesTestSuiteProvider;
+    private Provider<TweenDemo> tweenDemoProvider;
     private final IStage stage;
     private final Menu menu;
     private final IWindowStateChangeHandler windowStateChangeHandler;
@@ -58,6 +60,7 @@ public class DemoPixi {
         UNIT_TESTS("unittests"),
         DEFAULT("default"),
         BUTTONS("buttons"),
+        TWEEN("tween"),
         PROMISES("promises");
 
         private final String name;
@@ -90,7 +93,8 @@ public class DemoPixi {
             final Provider<UnitTests> unitTestsProvider,
             final Provider<TokiToriDemo> tokiToriDemoProvider,
             final Provider<ButtonDemo> buttonDemoProvider,
-            final Provider<PromisesTestSuite> promisesTestSuiteProvider
+            final Provider<PromisesTestSuite> promisesTestSuiteProvider,
+            final Provider<TweenDemo> tweenDemoProvider
     ){
         this.windowStateChangeHandler = windowStateChangeHandler;
         this.mainResponsivePanel = mainResponsivePanel;
@@ -105,6 +109,7 @@ public class DemoPixi {
         this.buttonDemoProvider = buttonDemoProvider;
 
         this.promisesTestSuiteProvider = promisesTestSuiteProvider;
+        this.tweenDemoProvider = tweenDemoProvider;
     }
 
     public void initialize() {
@@ -137,6 +142,7 @@ public class DemoPixi {
         menu.addButton(Type.UNIT_TESTS.name(),DemoPixi.this::startUnitTests);
         menu.addButton(Type.BUTTONS.name(),DemoPixi.this::startButtonDemo);
         menu.addButton(Type.PROMISES.name(),DemoPixi.this::startButtonPromises);
+        menu.addButton(Type.TWEEN.name(),DemoPixi.this::startButtonTween);
 
         Type type = Type.parse(urlParametersManager.getParameter("autorun"));
         switch (type) {
@@ -158,6 +164,9 @@ public class DemoPixi {
             case PROMISES:
                 startButtonPromises();
                 break;
+            case TWEEN:
+                startButtonTween();
+                break;
             case DEFAULT:
                 menu.show();
         }
@@ -165,6 +174,10 @@ public class DemoPixi {
 
     private void startButtonPromises() {
         this.promisesTestSuiteProvider.get().test();
+    }
+
+    private void startButtonTween() {
+        this.tweenDemoProvider.get().test();
     }
 
     private void startButtonDemo() {
