@@ -77,7 +77,7 @@ public class SoccerBallDemo extends ADemo {
 
     private void createSoccerBall() {
         final Spine spine = new Spine(DemoPixi.RES.soccerBall().getSkeletonData());
-        spine.position.set(550, 450);
+        spine.position.set(stage.getWidth() / 2, stage.getHeight());
         spine.state.setAnimation(0, "animation",true);
         this.mainContainer.addChild(spine);
         this.ticker.addTickable(new ITickable() {
