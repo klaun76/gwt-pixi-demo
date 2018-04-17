@@ -125,16 +125,21 @@ public class Menu implements IResponsiveController {
     }
 
     private void updateButtons(double width, double height) {
-        double y = height / 2 - (this.buttonHeight * (this.shapeButtons.size()/2));
+        double y = height / 2 - (this.buttonHeight * 1.2 * (this.shapeButtons.size() / 4));
         double yDelta = 0;
-        for (IShapeButton shapeButton : this.shapeButtons) {
-            DisplayObject button = shapeButton.asDisplayObject();
-            double x = width / 2 - button.getBounds().width / 2;
-            button.position.set(x,y + yDelta);
+        boolean isRightSide = false;
+        for (int i = 0; i < this.shapeButtons.size(); i++) {
+            DisplayObject button = this.shapeButtons.get(i).asDisplayObject();
+            if (i == this.shapeButtons.size() / 2 && !isRightSide) {
+                isRightSide = true;
+                yDelta = 0;
+            }
+            double x = (isRightSide ? (width - width / 4) : (width / 4)) - button.getBounds().width / 2;
+            button.position.set(x, y + yDelta);
             yDelta += buttonHeight * 1.2;
         }
-
     }
+
     @Override
     public void addResponsiveController(IResponsiveController responsiveController) {
         throw new UnsupportedOperationException();
