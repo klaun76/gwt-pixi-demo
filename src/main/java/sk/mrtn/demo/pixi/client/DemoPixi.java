@@ -4,6 +4,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import elemental.dom.Node;
 import sk.mrtn.demo.pixi.client.buttondemo.ButtonDemo;
 import elemental.client.Browser;
+import sk.mrtn.demo.pixi.client.soccerball.SoccerBallDemo;
 import sk.mrtn.demo.pixi.client.tween.TweenDemo;
 import sk.mrtn.library.client.promises.PromisesTestSuite;
 import sk.mrtn.pixi.client.stage.IStage;
@@ -40,6 +41,7 @@ public class DemoPixi {
     }
 
     private final IUrlParametersManager urlParametersManager;
+    private final Provider<SoccerBallDemo> soccerBallDemoProvider;
     private final Provider<DefaultDemo> defaultDemoProvider;
     private final Provider<LastGuardianDemo> lastGuardianDemoProvider;
     private final Provider<UnitTests> unitTestsProvider;
@@ -54,6 +56,7 @@ public class DemoPixi {
     private final ITicker ticker;
 
     enum Type {
+        SOCCER_BALL("soccerball"),
         PARTICLES("particles"),
         TOKI_TORI("tokitori"),
         LAST_GUARDIAN("lastguardian"),
@@ -88,6 +91,7 @@ public class DemoPixi {
             final IStage stage,
             final IUrlParametersManager urlParametersManager,
             final Menu menu,
+            final Provider<SoccerBallDemo> soccerBallDemoProvider,
             final Provider<DefaultDemo> defaultDemoProvider,
             final Provider<LastGuardianDemo> lastGuardianDemoProvider,
             final Provider<UnitTests> unitTestsProvider,
@@ -102,6 +106,7 @@ public class DemoPixi {
         this.stage = stage;
         this.urlParametersManager = urlParametersManager;
         this.menu = menu;
+        this.soccerBallDemoProvider = soccerBallDemoProvider;
         this.defaultDemoProvider = defaultDemoProvider;
         this.lastGuardianDemoProvider = lastGuardianDemoProvider;
         this.unitTestsProvider = unitTestsProvider;
@@ -136,6 +141,7 @@ public class DemoPixi {
     }
 
     private void onMenuInitialized() {
+        menu.addButton(Type.SOCCER_BALL.name(), DemoPixi.this::startSoccerBall);
         menu.addButton(Type.PARTICLES.name(),DemoPixi.this::startParticles);
         menu.addButton(Type.TOKI_TORI.name(),DemoPixi.this::startTokiTori);
         menu.addButton(Type.LAST_GUARDIAN.name(),DemoPixi.this::startLastGuardian);
@@ -146,6 +152,9 @@ public class DemoPixi {
 
         Type type = Type.parse(urlParametersManager.getParameter("autorun"));
         switch (type) {
+            case SOCCER_BALL:
+                startSoccerBall();
+                break;
             case PARTICLES:
                 startParticles();
                 break;
@@ -212,6 +221,13 @@ public class DemoPixi {
         this.defaultDemoProvider.get().open(null);
         if (!this.defaultDemoProvider.get().isInitialized()) {
             defaultDemoProvider.get().getButton().addClickHandler(button -> menu.show());
+        }
+    }
+
+    private void startSoccerBall() {
+        this.soccerBallDemoProvider.get().open(null);
+        if (!this.soccerBallDemoProvider.get().isInitialized()) {
+            soccerBallDemoProvider.get().getButton().addClickHandler(button -> menu.show());
         }
     }
 
