@@ -119,7 +119,7 @@ public class SoccerBallDemo extends ADemo {
         this.spineForTicker.position.set(stage.getWidth() - 100, stage.getHeight());
 
         addSpineListeners("timeline Spine", this.spine);
-//        addSpineListeners("ticker Spine", this.spineForTicker);
+        addSpineListeners("ticker Spine", this.spineForTicker);
 
         this.mainContainer.addChild(this.spine);
         this.mainContainer.addChild(this.spineForTicker);
@@ -146,6 +146,10 @@ public class SoccerBallDemo extends ADemo {
 
         spineEventHandling.addDisposeEventListener((spine1, trackIndex) -> {
             LOG.info(spineName + ": DISPOSE");
+        });
+
+        spineEventHandling.addInterruptedEventListener((spine1, trackIndex) -> {
+            LOG.info(spineName + ": INTERRUPTED");
         });
     }
 
