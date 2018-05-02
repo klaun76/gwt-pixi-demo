@@ -83,9 +83,7 @@ public class SpineAnimation {
      */
     public Timeline asTimeline() {
         Timeline timeline = Timeline.createSequence();
-        timeline.push(Tween.call((i, baseTween) -> {
-            initialize();
-        }));
+        timeline.push(Tween.call((i, baseTween) -> initialize()));
         timeline.push(Tween.to(this, SpineAccessor.SPINE, (float) duration).target((float) TARGET_VALUE).ease(TweenEquations.easeNone));
         return timeline;
     }

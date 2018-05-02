@@ -10,7 +10,7 @@ import sk.mrtn.library.client.tweenengine.TweenAccessor;
  */
 public class SpineAccessor implements TweenAccessor<SpineAnimation> {
 
-    public static final int SPINE = 1;
+    protected static final int SPINE = 1;
 
     private static boolean isRegistered;
 
